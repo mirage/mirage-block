@@ -47,12 +47,41 @@ let basic_copy () =
         Copy.copy (module Ramdisk) from (module Ramdisk) dest
         >>= function
         | `Error (`Msg m) -> failwith m
-        | `Ok () -> return () in
+        | `Ok () ->
+        Compare.compare (module Ramdisk) from (module Ramdisk) dest
+        >>= function
+        | `Error (`Msg m) -> failwith m
+        | `Ok x -> assert_equal ~printer:string_of_int 0 x; return () in
+  Lwt_main.run t
+
+let random_copy () =
+  let t =
+    Ramdisk.connect ~name:"from"
+    >>= function
+    | `Error _ -> failwith "from"
+    | `Ok from ->
+      Patterns.random (module Ramdisk) from
+      >>= function
+      | `Error _ -> failwith "random"
+      | `Ok () ->
+      Ramdisk.connect ~name:"dest"
+      >>= function
+      | `Error _ -> failwith "dest"
+      | `Ok dest ->
+        Copy.copy (module Ramdisk) from (module Ramdisk) dest
+        >>= function
+        | `Error (`Msg m) -> failwith m
+        | `Ok () ->
+        Compare.compare (module Ramdisk) from (module Ramdisk) dest
+        >>= function
+        | `Error (`Msg m) -> failwith m
+        | `Ok x -> assert_equal ~printer:string_of_int 0 x; return () in
   Lwt_main.run t
 
 let tests = [
   "ramdisk compare" >:: ramdisk_compare;
   "copy empty ramdisk" >:: basic_copy;
+  "copy a random disk" >:: random_copy;
 ]
 
 let _ =
