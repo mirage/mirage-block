@@ -1,0 +1,38 @@
+OASISFormat: 0.3
+Name:        mirage-block
+Version:     0.1
+Synopsis:    Mirage block implementations
+Authors:     David Scott
+License:     ISC
+Plugins:     META (0.3)
+BuildTools:  ocamlbuild
+
+Library mirage_block
+  Pack:               true
+  CompiledObject:     best
+  Path:               lib
+  Findlibname:        mirage-block
+  Modules:            Copy
+  BuildDepends:       cstruct, io-page, mirage-types.lwt, lwt
+
+Document mirage_block
+  Title:                Mirage block documentation
+  Type:                 ocamlbuild (0.3)
+  BuildTools+:          ocamldoc
+  Install:              true
+  XOCamlbuildPath:      lib
+  XOCamlbuildLibraries: mirage-block
+
+Executable test
+  Path:               lib_test
+  MainIs:             tests.ml
+  Build$:             flag(tests)
+  Custom:             true
+  CompiledObject:     best
+  Install:            false
+  BuildDepends:       mirage-block, oUnit (>= 1.0.2)
+
+Test test
+  Run$:               flag(tests)
+  Command:            $test -runner sequential
+  WorkingDirectory:   lib_test
