@@ -15,6 +15,8 @@
  *
  *)
 
+let fold_s = Mirage_block_iter.fold_s
+
 let compare = Mirage_block_compare.compare
 
 let copy = Mirage_block_copy.copy
