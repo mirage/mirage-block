@@ -15,6 +15,8 @@
  *
  *)
 
+(** Utility functions over Mirage [BLOCK] devices *)
+
 val compare:
   (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
   (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
