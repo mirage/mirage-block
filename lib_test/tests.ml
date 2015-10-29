@@ -15,9 +15,27 @@
  *
  *)
 open Mirage_block
+open Lwt
 open OUnit
 
+let basic_copy () =
+  let t =
+    Ramdisk.connect ~name:"from"
+    >>= function
+    | `Error _ -> failwith "from"
+    | `Ok from ->
+      Ramdisk.connect ~name:"dest"
+      >>= function
+      | `Error _ -> failwith "dest"
+      | `Ok dest ->
+        Copy.copy (module Ramdisk) from (module Ramdisk) dest
+        >>= function
+        | `Error (`Msg m) -> failwith m
+        | `Ok () -> return () in
+  Lwt_main.run t
+
 let tests = [
+  "copy empty ramdisk" >:: basic_copy;
 ]
 
 let _ =

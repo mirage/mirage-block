@@ -30,7 +30,7 @@ Executable test
   Custom:             true
   CompiledObject:     best
   Install:            false
-  BuildDepends:       mirage-block, oUnit (>= 1.0.2)
+  BuildDepends:       mirage-block, oUnit (>= 1.0.2), lwt.unix, io-page.unix
 
 Test test
   Run$:               flag(tests)
