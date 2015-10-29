@@ -14,9 +14,77 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *)
+open Lwt
+
+let error_to_string = function
+  | `Unknown x -> x
+  | `Unimplemented -> "Unimplemented"
+  | `Is_read_only -> "Is_read_only"
+  | `Disconnected -> "Disconnected"
 
 let copy
   (type from) (module From: V1_LWT.BLOCK with type t = from) (from: from)
   (type dest) (module Dest: V1_LWT.BLOCK with type t = dest) (dest: dest) =
-  Lwt.return (`Error (`Msg "copy is not yet implemented"))
 
+  From.get_info from
+  >>= fun from_info ->
+  Dest.get_info dest
+  >>= fun dest_info ->
+
+  let total_size_from = Int64.(mul from_info.From.size_sectors (of_int from_info.From.sector_size)) in
+  let total_size_dest = Int64.(mul dest_info.Dest.size_sectors (of_int dest_info.Dest.sector_size)) in
+  if total_size_from <> total_size_dest
+  then return (`Error `Different_sizes)
+  else begin
+
+    (* We'll run multiple threads to try to overlap I/O *)
+    let next_from_sector = ref 0L in
+    let next_dest_sector = ref 0L in
+    let failure = ref None in
+    let m = Lwt_mutex.create () in
+
+    let record_failure e =
+      Lwt_mutex.with_lock m
+        (fun () -> match !failure with
+          | Some _ -> return ()
+          | None -> failure := Some e; return ()) in
+
+    let thread () =
+      (* A page-aligned 64KiB buffer *)
+      let buffer = Io_page.(to_cstruct (get 8)) in
+      let from_sectors = Cstruct.len buffer / from_info.From.sector_size in
+      let dest_sectors = Cstruct.len buffer / dest_info.Dest.sector_size in
+      let rec loop () =
+        Lwt_mutex.with_lock m (fun () ->
+          let next_from = !next_from_sector in
+          let next_dest = !next_dest_sector in
+          next_from_sector := Int64.(add next_from (of_int from_sectors));
+          next_dest_sector := Int64.(add next_dest (of_int dest_sectors));
+          return (next_from, next_dest)
+        ) >>= fun (next_from, next_dest) ->
+        if next_from >= from_info.From.size_sectors
+        then return ()
+        else begin
+          let remaining = Int64.(sub from_info.From.size_sectors next_from) in
+          let this_time = min from_sectors (Int64.to_int remaining) in
+          let buf = Cstruct.sub buffer 0 (from_info.From.sector_size * this_time) in
+          From.read from next_from [ buf ]
+          >>= function
+          | `Error e ->
+            record_failure (error_to_string e)
+          | `Ok () ->
+            Dest.write dest next_dest [ buf ]
+            >>= function
+            | `Error e ->
+              record_failure (error_to_string e)
+            | `Ok () ->
+              loop ()
+        end in
+      loop () in
+    let threads = List.map thread [ (); (); (); (); (); (); (); () ] in
+    Lwt.join threads
+    >>= fun () ->
+    match !failure with
+    | None -> return (`Ok ())
+    | Some msg -> return (`Error (`Msg msg))
+  end
