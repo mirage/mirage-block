@@ -41,6 +41,24 @@ let ramdisk_compare () =
     assert_equal ~printer:string_of_int 0 x; return () in
   Lwt_main.run t
 
+let different_compare () =
+  let t =
+    Ramdisk.connect ~name:"from"
+    >>= fun x ->
+    let from = expect_ok "from" x in
+    Patterns.random (module Ramdisk) from
+    >>= fun x ->
+    let () = expect_ok "patterns" x in
+    Ramdisk.connect ~name:"dest"
+    >>= fun x ->
+    let dest = expect_ok "dest" x in
+    Compare.compare (module Ramdisk) from (module Ramdisk) dest
+    >>= fun x ->
+    let x = expect_ok_msg x in
+    if x = 0 then failwith "different disks compared the same";
+    return () in
+  Lwt_main.run t
+
 let basic_copy () =
   let t =
     Ramdisk.connect ~name:"from"
@@ -80,6 +98,7 @@ let random_copy () =
 
 let tests = [
   "ramdisk compare" >:: ramdisk_compare;
+  "different compare" >:: different_compare;
   "copy empty ramdisk" >:: basic_copy;
   "copy a random disk" >:: random_copy;
 ]
