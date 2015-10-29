@@ -8,11 +8,11 @@ Plugins:     META (0.3)
 BuildTools:  ocamlbuild
 
 Library mirage_block
-  Pack:               true
+  Pack:               false
   CompiledObject:     best
   Path:               lib
   Findlibname:        mirage-block
-  Modules:            Copy, Ramdisk, Patterns, Compare
+  Modules:            Mirage_block, Mirage_block_copy, Ramdisk, Mirage_block_patterns, Mirage_block_compare
   BuildDepends:       cstruct, io-page, mirage-types.lwt, lwt
 
 Document mirage_block

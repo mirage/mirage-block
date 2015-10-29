@@ -14,7 +14,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *)
-open Mirage_block
 open Lwt
 open OUnit
 
@@ -35,7 +34,7 @@ let ramdisk_compare () =
     Ramdisk.connect ~name:"dest"
     >>= fun x ->
     let dest = expect_ok "dest" x in
-    Compare.compare (module Ramdisk) from (module Ramdisk) dest
+    Mirage_block.compare (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let x = expect_ok_msg x in
     assert_equal ~printer:string_of_int 0 x; return () in
@@ -46,13 +45,13 @@ let different_compare () =
     Ramdisk.connect ~name:"from"
     >>= fun x ->
     let from = expect_ok "from" x in
-    Patterns.random (module Ramdisk) from
+    Mirage_block.random (module Ramdisk) from
     >>= fun x ->
     let () = expect_ok "patterns" x in
     Ramdisk.connect ~name:"dest"
     >>= fun x ->
     let dest = expect_ok "dest" x in
-    Compare.compare (module Ramdisk) from (module Ramdisk) dest
+    Mirage_block.compare (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let x = expect_ok_msg x in
     if x = 0 then failwith "different disks compared the same";
@@ -67,10 +66,10 @@ let basic_copy () =
     Ramdisk.connect ~name:"dest"
     >>= fun x ->
     let dest = expect_ok "dest" x in
-    Copy.copy (module Ramdisk) from (module Ramdisk) dest
+    Mirage_block.copy (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let () = expect_ok_msg x in
-    Compare.compare (module Ramdisk) from (module Ramdisk) dest
+    Mirage_block.compare (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let x = expect_ok_msg x in
     assert_equal ~printer:string_of_int 0 x; return () in
@@ -81,16 +80,16 @@ let random_copy () =
     Ramdisk.connect ~name:"from"
     >>= fun x ->
     let from = expect_ok "from" x in
-    Patterns.random (module Ramdisk) from
+    Mirage_block.random (module Ramdisk) from
     >>= fun x ->
     let () = expect_ok "patterns" x in
     Ramdisk.connect ~name:"dest"
     >>= fun x ->
     let dest = expect_ok "dest" x in
-    Copy.copy (module Ramdisk) from (module Ramdisk) dest
+    Mirage_block.copy (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let () = expect_ok_msg x in
-    Compare.compare (module Ramdisk) from (module Ramdisk) dest
+    Mirage_block.compare (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let x = expect_ok_msg x in
     assert_equal ~printer:string_of_int 0 x; return () in
