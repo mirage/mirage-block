@@ -7,14 +7,20 @@
 *.cmx
 *.cmxs
 *.cmxa
-
-# ocamlbuild working directory
-_build/
-
-# ocamlbuild targets
-*.byte
+_build
 *.native
-
-# oasis generated files
+setup.bin
 setup.data
 setup.log
+.coverage/
+
+# REMOVE to release the package
+_tags
+lib/META
+*.mldylib
+*.mllib
+*.mlpack
+myocamlbuild.ml
+setup.ml
+*.odocl
+*.docdir
