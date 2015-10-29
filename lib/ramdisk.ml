@@ -51,22 +51,27 @@ let devices = Hashtbl.create 1
 
 let get_info { info } = return info
 
-let connect name =
+let create ~name ~size_sectors ~sector_size =
+  let map = Int64Map.empty in
+  let info = {
+    read_write = true;
+    size_sectors;
+    sector_size;
+  } in
+  let device = { map; info; id = name } in
+  Hashtbl.replace devices name device
+
+let destroy ~name = Hashtbl.remove devices name
+
+let connect ~name =
   if Hashtbl.mem devices name
   then return (`Ok (Hashtbl.find devices name))
-  else
-    let map = Int64Map.empty in
-    let info = {
-      read_write = true;
-      sector_size = 512;
-      size_sectors = 32768L; (* 16 MiB *)
-    } in
-    let device = { map; info; id = name } in
-    Hashtbl.replace devices name device;
-    return (`Ok device)
+  else begin
+    create ~name ~size_sectors:32768L ~sector_size:512;
+    return (`Ok (Hashtbl.find devices name))
+  end
 
 let disconnect t =
-  t.map <- Int64Map.empty;
   return ()
 
 let rec read x sector_start buffers = match buffers with

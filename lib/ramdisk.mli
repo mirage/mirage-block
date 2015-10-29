@@ -17,4 +17,13 @@
 include V1_LWT.BLOCK
   with type id = string
 
-val connect: string -> [ `Ok of t | `Error of error ] Lwt.t
+val create: name:string -> size_sectors:int64 -> sector_size:int -> unit
+(** Create an in-memory block device (a "ramdisk") with a given name,
+    total size in sectors and sector size. Two calls to [connect] with the
+    same name will return the same block device *)
+
+val destroy: name:string -> unit
+(** Destroy removes an in-memory block device. Subsequent calls to
+    [connect] will create a fresh empty device. *)
+
+val connect: name:string -> [ `Ok of t | `Error of error ] Lwt.t
