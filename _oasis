@@ -12,7 +12,7 @@ Library mirage_block
   CompiledObject:     best
   Path:               lib
   Findlibname:        mirage-block
-  Modules:            Copy, Ramdisk
+  Modules:            Copy, Ramdisk, Patterns
   BuildDepends:       cstruct, io-page, mirage-types.lwt, lwt
 
 Document mirage_block
