@@ -27,3 +27,8 @@ val destroy: name:string -> unit
     [connect] will create a fresh empty device. *)
 
 val connect: name:string -> [ `Ok of t | `Error of error ] Lwt.t
+
+val resize : t -> int64 -> [ `Ok of unit | `Error of error ] io
+(** [resize t new_size_sectors] attempts to resize the connected device
+    to have the given number of sectors. If successful, subsequent calls
+    to [get_info] will reflect the new size. *)
