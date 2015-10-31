@@ -41,7 +41,7 @@ module Int64Map = Map.Make(Int64)
 
 type t = {
   mutable map: page_aligned_buffer Int64Map.t;
-  info: info;
+  mutable info: info;
   id: id;
 }
 
@@ -99,3 +99,10 @@ let rec write x sector_start buffers = match buffers with
       x.map <- Int64Map.add sector_start (Cstruct.sub b 0 512) x.map;
       write x (Int64.succ sector_start) (Cstruct.shift b 512 :: bs)
     end
+
+let resize x new_size_sectors =
+  let to_keep, to_throw_away =
+    Int64Map.partition (fun sector_start _ -> sector_start < new_size_sectors) x.map in
+  x.map <- to_keep;
+  x.info <- { x.info with size_sectors = new_size_sectors };
+  Lwt.return (`Ok ())
