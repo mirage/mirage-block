@@ -14,17 +14,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *)
+ let bind m f =
+	let open Lwt in
+	m >>= function
+	| `Error x -> Lwt.return (`Error x)
+	| `Ok x -> f x
 
-module Monad = Mirage_block_monad
+let return x = Lwt.return (`Ok x)
 
-let fold_s = Mirage_block_iter.fold_s
-
-let fold_mapped_s = Mirage_block_iter.fold_mapped_s
-
-let fold_unmapped_s = Mirage_block_iter.fold_unmapped_s
-
-let compare = Mirage_block_compare.compare
-
-let copy = Mirage_block_copy.copy
-
-let random = Mirage_block_patterns.random
+module Infix = struct
+  let (>>=) m f = bind m f
+end
