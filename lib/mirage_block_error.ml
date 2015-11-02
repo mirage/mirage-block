@@ -15,16 +15,17 @@
  *
  *)
 
-module Error = Mirage_block_error
+ type error = [
+   | `Unknown of string (** an undiagnosed error *)
+   | `Unimplemented     (** operation not yet implemented in the code *)
+   | `Is_read_only      (** you cannot write to a read/only instance *)
+   | `Disconnected      (** the device has been previously disconnected *)
+ ]
+ (** The type for IO operation errors. *)
 
-let fold_s = Mirage_block_iter.fold_s
+ type 'a result = [
+   | `Ok of 'a
+   | `Error of error
+ ]
 
-let fold_mapped_s = Mirage_block_iter.fold_mapped_s
-
-let fold_unmapped_s = Mirage_block_iter.fold_unmapped_s
-
-let compare = Mirage_block_compare.compare
-
-let copy = Mirage_block_copy.copy
-
-let random = Mirage_block_patterns.random
+module Monad = Mirage_block_monad
