@@ -7,8 +7,13 @@
 <link rel="previous" href="Mirage_block_patterns.html">
 <link rel="next" href="Mirage_block_iter.html">
 <link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Mirage_block_s" rel="Chapter" href="Mirage_block_s.html">
+<link title="Mirage_block_error" rel="Chapter" href="Mirage_block_error.html">
+<link title="Mirage_block_monad" rel="Chapter" href="Mirage_block_monad.html">
 <link title="Mirage_block" rel="Chapter" href="Mirage_block.html">
 <link title="Mirage_block_copy" rel="Chapter" href="Mirage_block_copy.html">
 <link title="Ramdisk" rel="Chapter" href="Ramdisk.html">
@@ -23,12 +28,7 @@
 </div>
 <h1>Module <a href="type_Mirage_block_compare.html">Mirage_block_compare</a></h1>
 
-<pre><span class="keyword">module</span> Mirage_block_compare: <code class="code">sig</code> <a href="Mirage_block_compare.html">..</a> <code class="code">end</code></pre><div class="info module top">
-Compare the contents of two block devices.<br>
-</div>
-<hr width="100%">
+<pre><span class="keyword">module</span> Mirage_block_compare: <code class="code">sig</code> <a href="Mirage_block_compare.html">..</a> <code class="code">end</code></pre><hr width="100%">
 
-<pre><span id="VALcompare"><span class="keyword">val</span> compare</span> : <code class="type">(module V1_LWT.BLOCK with type t = 'a) -><br>       'a -><br>       (module V1_LWT.BLOCK with type t = 'b) -><br>       'b -> [ `Error of [> `Msg of string ] | `Ok of int ] Lwt.t</code></pre><div class="info ">
-Compare the contents of two block devices.<br>
-</div>
-</body></html>
+<pre><span id="VALerror_to_string"><span class="keyword">val</span> error_to_string</span> : <code class="type">[< `Disconnected | `Is_read_only | `Unimplemented | `Unknown of string ] -><br>       string</code></pre>
+<pre><span id="VALcompare"><span class="keyword">val</span> compare</span> : <code class="type">(module V1_LWT.BLOCK with type t = 'a) -><br>       'a -><br>       (module V1_LWT.BLOCK with type t = 'b) -><br>       'b -> [> `Error of [> `Msg of string ] | `Ok of int ] Lwt.t</code></pre></body></html>
