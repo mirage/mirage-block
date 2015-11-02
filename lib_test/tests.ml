@@ -95,11 +95,29 @@ let random_copy () =
     assert_equal ~printer:string_of_int 0 x; return () in
   Lwt_main.run t
 
+let sparse_copy () =
+  let t =
+    Ramdisk.connect ~name:"from"
+    >>= fun x ->
+    let from = expect_ok "from" x in
+    Ramdisk.connect ~name:"dest"
+    >>= fun x ->
+    let dest = expect_ok "dest" x in
+    Mirage_block.sparse_copy (module Ramdisk) from (module Ramdisk) dest
+    >>= fun x ->
+    let () = expect_ok_msg x in
+    Mirage_block.compare (module Ramdisk) from (module Ramdisk) dest
+    >>= fun x ->
+    let x = expect_ok_msg x in
+    assert_equal ~printer:string_of_int 0 x; return () in
+  Lwt_main.run t
+
 let tests = [
   "ramdisk compare" >:: ramdisk_compare;
   "different compare" >:: different_compare;
   "copy empty ramdisk" >:: basic_copy;
   "copy a random disk" >:: random_copy;
+  "sparse copy an empty disk" >:: sparse_copy;
 ]
 
 let _ =
