@@ -41,10 +41,9 @@ val fold_mapped_s:
     only zeroes. Note it may still read blocks containing zeroes. *)
 
 val fold_unmapped_s:
-  f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -> 'a ->
+  f:('a -> int64 -> Cstruct.t -> 'a Mirage_block_error.result Lwt.t) -> 'a ->
   (module Mirage_block_s.SEEKABLE with type t = 'b) -> 'b ->
-  [ `Ok of 'a | `Error of [> `Msg of string ]] Lwt.t
-
+  'a Mirage_block_error.result Lwt.t
 (** Folds [f] across data blocks read sequentially from a block device.
     In contrast to [fold_s], [fold_unmapped_s] will use knowledge about the
     underlying disk structure and will only fold across those blocks which

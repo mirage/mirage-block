@@ -82,6 +82,15 @@ let fold_mapped_s ~f init
   >>= fun start ->
   loop init start
 
+(* If we flip the functions [seek_mapped] and [seek_unmapped] then
+   we can use [fold_mapped_s] to fold over the unmapped data instead *)
+
+module Flip(Input: Mirage_block_s.SEEKABLE) = struct
+  include Input
+  let seek_mapped, seek_unmapped = seek_unmapped, seek_mapped
+end
+
 let fold_unmapped_s ~f init
   (type seekable) (module Seekable: Mirage_block_s.SEEKABLE with type t = seekable) (s: seekable) =
-  failwith "not implemented"
+  let module Flipped = Flip(Seekable) in
+  fold_mapped_s ~f init (module Flipped) s
