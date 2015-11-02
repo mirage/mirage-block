@@ -27,4 +27,6 @@ let compare = Mirage_block_compare.compare
 
 let copy = Mirage_block_copy.copy
 
+let sparse_copy = Mirage_block_copy.sparse_copy
+
 let random = Mirage_block_patterns.random

@@ -26,3 +26,19 @@ val copy:
 
     Fails with `Is_read_only if the destination device is read-only.
 *)
+
+val sparse_copy:
+  (module Mirage_block_s.SEEKABLE with type t = 'a) -> 'a ->
+  (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
+  [ `Ok of unit | `Error of [> `Msg of string | `Is_read_only | `Different_sizes ]] Lwt.t
+(** Copy all mapped data from a source SEEKABLE device to a destination BLOCK device.
+
+    This function will preserve sparseness information in the source disk. The
+    destination block device must be pre-zeroed, otherwise previous data will
+    "leak through".
+
+    Fails with `Different_sizes if the source and destination are not exactly
+    the same size.
+
+    Fails with `Is_read_only if the destination device is read-only.
+*)
