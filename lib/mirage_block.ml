@@ -17,9 +17,12 @@
 
 let fold_s = Mirage_block_iter.fold_s
 
+let fold_mapped_s = Mirage_block_iter.fold_mapped_s
+
+let fold_unmapped_s = Mirage_block_iter.fold_unmapped_s
+
 let compare = Mirage_block_compare.compare
 
 let copy = Mirage_block_copy.copy
 
 let random = Mirage_block_patterns.random
-

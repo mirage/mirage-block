@@ -29,6 +29,24 @@ val fold_s:
   [ `Ok of 'a | `Error of [> `Msg of string ]] Lwt.t
 (** Folds [f] across blocks read sequentially from a block device *)
 
+val fold_mapped_s:
+  f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -> 'a ->
+  (module Mirage_block_s.SEEKABLE with type t = 'b) -> 'b ->
+  [ `Ok of 'a | `Error of [> `Msg of string ]] Lwt.t
+(** Folds [f] across data blocks read sequentially from a block device.
+    In contrast to [fold_s], [fold_mapped_s] will use knowledge about the
+    underlying disk structure and will skip blocks which it knows contain
+    only zeroes. Note it may still read blocks containing zeroes. *)
+
+val fold_unmapped_s:
+  f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -> 'a ->
+  (module Mirage_block_s.SEEKABLE with type t = 'b) -> 'b ->
+  [ `Ok of 'a | `Error of [> `Msg of string ]] Lwt.t
+(** Folds [f] across data blocks read sequentially from a block device.
+    In contrast to [fold_s], [fold_unmapped_s] will use knowledge about the
+    underlying disk structure and will only fold across those blocks which
+    are guaranteed to be zero i.e. those which are unmapped somehow. *)
+
 val copy:
   (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
   (module V1_LWT.BLOCK with type t = 'b) -> 'b ->

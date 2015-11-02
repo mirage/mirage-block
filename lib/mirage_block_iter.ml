@@ -46,3 +46,11 @@ let fold_s ~f init
         loop acc Int64.(add next (of_int this_time))
     end in
   loop init 0L
+
+let fold_mapped_s ~f init
+  (type seekable) (module Seekable: Mirage_block_s.SEEKABLE with type t = seekable) (s: seekable) =
+  failwith "not implemented"
+
+let fold_unmapped_s ~f init
+  (type seekable) (module Seekable: Mirage_block_s.SEEKABLE with type t = seekable) (s: seekable) =
+  failwith "not implemented"
