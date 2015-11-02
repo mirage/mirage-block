@@ -100,6 +100,20 @@ let rec write x sector_start buffers = match buffers with
       write x (Int64.succ sector_start) (Cstruct.shift b 512 :: bs)
     end
 
+let seek_mapped t from =
+  let rec loop from =
+    if from >= t.info.size_sectors || Int64Map.mem from t.map
+    then Lwt.return (`Ok from)
+    else loop (Int64.succ from) in
+  loop from
+
+let seek_unmapped t from =
+  let rec loop from =
+    if from >= t.info.size_sectors || not (Int64Map.mem from t.map)
+    then Lwt.return (`Ok from)
+    else loop (Int64.succ from) in
+  loop from
+
 let resize x new_size_sectors =
   let to_keep, to_throw_away =
     Int64Map.partition (fun sector_start _ -> sector_start < new_size_sectors) x.map in

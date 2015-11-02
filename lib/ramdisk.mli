@@ -14,7 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *)
 
-include V1_LWT.BLOCK
+include Mirage_block_s.SEEKABLE
   with type id = string
 
 val create: name:string -> size_sectors:int64 -> sector_size:int -> unit
