@@ -78,7 +78,9 @@ let fold_mapped_s ~f init
         loop acc next in
       inner acc next
     end in
-  loop init 0L
+  Seekable.seek_mapped s 0L
+  >>= fun start ->
+  loop init start
 
 let fold_unmapped_s ~f init
   (type seekable) (module Seekable: Mirage_block_s.SEEKABLE with type t = seekable) (s: seekable) =
