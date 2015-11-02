@@ -15,7 +15,17 @@
  *
  *)
 
-val random:
-  (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
-  [ `Ok of unit | `Error of [> `Msg of string ]] Lwt.t
-(** Fill a block device with pseudorandom data *)
+ type error = [
+   | `Unknown of string (** an undiagnosed error *)
+   | `Unimplemented     (** operation not yet implemented in the code *)
+   | `Is_read_only      (** you cannot write to a read/only instance *)
+   | `Disconnected      (** the device has been previously disconnected *)
+ ]
+ (** The type for IO operation errors. *)
+
+ type 'a result = [
+   | `Ok of 'a
+   | `Error of error
+ ]
+
+module Monad = Mirage_block_monad

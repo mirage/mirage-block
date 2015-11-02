@@ -15,14 +15,19 @@
  *
  *)
 
-val copy:
-  (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
-  (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
-  [ `Ok of unit | `Error of [> `Msg of string | `Is_read_only | `Different_sizes ]] Lwt.t
-(** Copy all data from a source BLOCK device to a destination BLOCK device.
+type error = [
+  | `Unknown of string (** an undiagnosed error *)
+  | `Unimplemented     (** operation not yet implemented in the code *)
+  | `Is_read_only      (** you cannot write to a read/only instance *)
+  | `Disconnected      (** the device has been previously disconnected *)
+]
+(** The type for IO operation errors. *)
 
-    Fails with `Different_sizes if the source and destination are not exactly
-    the same size.
+type 'a result = [
+  | `Ok of 'a
+  | `Error of error
+]
 
-    Fails with `Is_read_only if the destination device is read-only.
-*)
+module Monad: sig
+  include module type of Mirage_block_monad
+end

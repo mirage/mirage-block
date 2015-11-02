@@ -22,8 +22,18 @@ let error_to_string = function
   | `Is_read_only -> "Is_read_only"
   | `Disconnected -> "Disconnected"
 
-let copy
-  (type from) (module From: V1_LWT.BLOCK with type t = from) (from: from)
+module Make_seekable(B: V1_LWT.BLOCK) = struct
+  include B
+
+  let seek_mapped t sector = Lwt.return (`Ok sector)
+  let seek_unmapped t _ =
+    B.get_info t
+    >>= fun info ->
+    Lwt.return (`Ok info.B.size_sectors)
+end
+
+let sparse_copy
+  (type from) (module From: Mirage_block_s.SEEKABLE with type t = from) (from: from)
   (type dest) (module Dest: V1_LWT.BLOCK with type t = dest) (dest: dest) =
 
   From.get_info from
@@ -55,6 +65,7 @@ let copy
       let from_sectors = Cstruct.len buffer / from_info.From.sector_size in
       let dest_sectors = Cstruct.len buffer / dest_info.Dest.sector_size in
       let rec loop () =
+        (* Grab a region of the disk to copy *)
         Lwt_mutex.with_lock m (fun () ->
           let next_from = !next_from_sector in
           let next_dest = !next_dest_sector in
@@ -65,20 +76,44 @@ let copy
         if next_from >= from_info.From.size_sectors
         then return ()
         else begin
-          let remaining = Int64.(sub from_info.From.size_sectors next_from) in
-          let this_time = min from_sectors (Int64.to_int remaining) in
-          let buf = Cstruct.sub buffer 0 (from_info.From.sector_size * this_time) in
-          From.read from next_from [ buf ]
-          >>= function
-          | `Error e ->
-            record_failure (error_to_string e)
-          | `Ok () ->
-            Dest.write dest next_dest [ buf ]
-            >>= function
-            | `Error e ->
-              record_failure (error_to_string e)
-            | `Ok () ->
-              loop ()
+          (* Copy from [next_from, next_from + from_sectors], ommitting
+             unmapped subregions *)
+          let rec inner x y =
+            if x >= Int64.(add next_from (of_int from_sectors)) || x >= from_info.From.size_sectors
+            then loop ()
+            else begin
+              From.seek_mapped from x
+              >>= function
+              | `Error e ->
+                record_failure (error_to_string e)
+              | `Ok x' ->
+                if x' > x
+                then inner x' Int64.(add y (sub x' x))
+                else begin
+                  From.seek_unmapped from x
+                  >>= function
+                  | `Error e ->
+                    record_failure (error_to_string e)
+                  | `Ok next_unmapped ->
+                    (* Copy up to the unmapped block, or the end of our chunk... *)
+                    let copy_up_to = min next_unmapped Int64.(add next_from (of_int from_sectors)) in
+                    let remaining = Int64.sub copy_up_to x in
+                    let this_time = min (Int64.to_int remaining) from_sectors in
+                    let buf = Cstruct.sub buffer 0 (from_info.From.sector_size * this_time) in
+                    From.read from x [ buf ]
+                    >>= function
+                    | `Error e ->
+                      record_failure (error_to_string e)
+                    | `Ok () ->
+                      Dest.write dest y [ buf ]
+                      >>= function
+                      | `Error e ->
+                        record_failure (error_to_string e)
+                      | `Ok () ->
+                        inner Int64.(add x (of_int this_time)) Int64.(add y (of_int this_time))
+                  end
+            end in
+          inner next_from next_dest
         end in
       loop () in
     let threads = List.map thread [ (); (); (); (); (); (); (); () ] in
@@ -88,3 +123,9 @@ let copy
     | None -> return (`Ok ())
     | Some msg -> return (`Error (`Msg msg))
   end
+
+let copy
+  (type from) (module From: V1_LWT.BLOCK with type t = from) (from: from)
+  (type dest) (module Dest: V1_LWT.BLOCK with type t = dest) (dest: dest) =
+  let module From_seekable = Make_seekable(From) in
+  sparse_copy (module From_seekable) from (module Dest) dest

@@ -17,6 +17,8 @@
 
 (** Utility functions over Mirage [BLOCK] devices *)
 
+module Error = Mirage_block_error
+
 val compare:
   (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
   (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
@@ -29,11 +31,45 @@ val fold_s:
   [ `Ok of 'a | `Error of [> `Msg of string ]] Lwt.t
 (** Folds [f] across blocks read sequentially from a block device *)
 
+val fold_mapped_s:
+  f:('a -> int64 -> Cstruct.t -> 'a Mirage_block_error.result Lwt.t) -> 'a ->
+  (module Mirage_block_s.SEEKABLE with type t = 'b) -> 'b ->
+  'a Mirage_block_error.result Lwt.t
+(** Folds [f] across data blocks read sequentially from a block device.
+    In contrast to [fold_s], [fold_mapped_s] will use knowledge about the
+    underlying disk structure and will skip blocks which it knows contain
+    only zeroes. Note it may still read blocks containing zeroes. *)
+
+val fold_unmapped_s:
+  f:('a -> int64 -> Cstruct.t -> 'a Mirage_block_error.result Lwt.t) -> 'a ->
+  (module Mirage_block_s.SEEKABLE with type t = 'b) -> 'b ->
+  'a Mirage_block_error.result Lwt.t
+(** Folds [f] across data blocks read sequentially from a block device.
+    In contrast to [fold_s], [fold_unmapped_s] will use knowledge about the
+    underlying disk structure and will only fold across those blocks which
+    are guaranteed to be zero i.e. those which are unmapped somehow. *)
+
 val copy:
   (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
   (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
   [ `Ok of unit | `Error of [> `Msg of string | `Is_read_only | `Different_sizes ]] Lwt.t
 (** Copy all data from a source BLOCK device to a destination BLOCK device.
+
+    Fails with `Different_sizes if the source and destination are not exactly
+    the same size.
+
+    Fails with `Is_read_only if the destination device is read-only.
+*)
+
+val sparse_copy:
+  (module Mirage_block_s.SEEKABLE with type t = 'a) -> 'a ->
+  (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
+  [ `Ok of unit | `Error of [> `Msg of string | `Is_read_only | `Different_sizes ]] Lwt.t
+(** Copy all mapped data from a source SEEKABLE device to a destination BLOCK device.
+
+    This function will preserve sparseness information in the source disk. The
+    destination block device must be pre-zeroed, otherwise previous data will
+    "leak through".
 
     Fails with `Different_sizes if the source and destination are not exactly
     the same size.

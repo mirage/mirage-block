@@ -15,8 +15,10 @@
  *
  *)
 
-val compare:
-  (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
-  (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
-  [ `Ok of int | `Error of [> `Msg of string ]] Lwt.t
-(** Compare the contents of two block devices. *)
+val bind: [< `Error of 'a | `Ok of 'b ] Lwt.t -> ('b -> ([> `Error of 'a ] as 'c) Lwt.t) -> 'c Lwt.t
+
+val return: 'a -> [> `Ok of 'a ] Lwt.t
+
+module Infix: sig
+  val (>>=): [< `Error of 'a | `Ok of 'b ] Lwt.t -> ('b -> ([> `Error of 'a ] as 'c) Lwt.t) -> 'c Lwt.t
+end

@@ -14,9 +14,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  *)
+ let bind m f =
+	let open Lwt in
+	m >>= function
+	| `Error x -> Lwt.return (`Error x)
+	| `Ok x -> f x
 
-val fold_s:
-  f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -> 'a ->
-  (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
-  [ `Ok of 'a | `Error of [> `Msg of string ]] Lwt.t
-(** Folds [f] across blocks read sequentially from a block device *)
+let return x = Lwt.return (`Ok x)
+
+module Infix = struct
+  let (>>=) m f = bind m f
+end
