@@ -16,16 +16,21 @@
  *)
 
  type error = [
-   | `Unknown of string (** an undiagnosed error *)
-   | `Unimplemented     (** operation not yet implemented in the code *)
-   | `Is_read_only      (** you cannot write to a read/only instance *)
-   | `Disconnected      (** the device has been previously disconnected *)
+   | `Unknown of string
+   | `Unimplemented
+   | `Is_read_only
+   | `Disconnected
  ]
- (** The type for IO operation errors. *)
+
+exception Error of error
 
  type 'a result = [
    | `Ok of 'a
    | `Error of error
  ]
+
+ let ok_exn = function
+   | `Ok x -> x
+   | `Error error -> raise (Error error)
 
 module Monad = Mirage_block_monad

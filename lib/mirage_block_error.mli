@@ -23,10 +23,16 @@ type error = [
 ]
 (** The type for IO operation errors. *)
 
+exception Error of error
+(** An error value wrapped up in an exception *)
+
 type 'a result = [
   | `Ok of 'a
   | `Error of error
 ]
+
+val ok_exn: 'a result -> 'a
+(** Extract an [`Ok x] value, or throw an [Error] exception *)
 
 module Monad: sig
   include module type of Mirage_block_monad
