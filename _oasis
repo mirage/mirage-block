@@ -12,7 +12,7 @@ Library mirage_block
   CompiledObject:     best
   Path:               lib
   Findlibname:        mirage-block
-  Modules:            Mirage_block_s, Mirage_block_error, Mirage_block_monad, Mirage_block, Mirage_block_copy, Ramdisk, Mirage_block_patterns, Mirage_block_compare, Mirage_block_iter
+  Modules:            Mirage_block_s, Mirage_block_error, Mirage_block_monad, Mirage_block, Mirage_block_copy, Mirage_block_patterns, Mirage_block_compare, Mirage_block_iter
   BuildDepends:       cstruct, io-page, mirage-types.lwt, lwt
 
 Document mirage_block
@@ -30,7 +30,7 @@ Executable test
   Custom:             true
   CompiledObject:     best
   Install:            false
-  BuildDepends:       mirage-block, oUnit (>= 1.0.2), lwt.unix, io-page.unix
+  BuildDepends:       mirage-block, mirage-block-ramdisk, oUnit (>= 1.0.2), lwt.unix, io-page.unix
 
 Test test
   Run$:               flag(tests)
