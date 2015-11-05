@@ -22,6 +22,12 @@
    | `Disconnected
  ]
 
+let string_of_error = function
+   | `Unknown x -> Printf.sprintf "Unknown %s" x
+   | `Unimplemented -> "Operation is not implemented"
+   | `Is_read_only -> "Block device is read-only"
+   | `Disconnected -> "Block device is disconnected"
+
 exception Error of error
 
  type 'a result = [
