@@ -23,6 +23,9 @@ type error = [
 ]
 (** The type for IO operation errors. *)
 
+val string_of_error: error -> string
+(** Pretty-print an error value *)
+
 exception Error of error
 (** An error value wrapped up in an exception *)
 
