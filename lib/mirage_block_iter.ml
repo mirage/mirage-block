@@ -65,7 +65,7 @@ let fold_mapped_s ~f init
       (* A chunk of data exists between next and next_unmapped *)
       let rec inner acc next =
         if next >= next_unmapped || next >= info.Seekable.size_sectors
-        then Lwt.return (`Ok next)
+        then Lwt.return (`Ok (acc, next))
         else begin
           let remaining = Int64.sub info.Seekable.size_sectors next in
           let mapped = Int64.sub next_unmapped next in
@@ -79,7 +79,7 @@ let fold_mapped_s ~f init
           inner acc next
         end in
       inner acc next
-      >>= fun next ->
+      >>= fun (acc, next) ->
       (* next points to the next unmapped chunk (or end of device) *)
       Seekable.seek_mapped s next
       >>= fun next ->
