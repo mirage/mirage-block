@@ -19,11 +19,11 @@ module type SEEKABLE = sig
   include V1_LWT.BLOCK
 
 	val seek_unmapped: t -> int64 -> [ `Ok of int64 | `Error of error ] io
-	(** [seek_unmapped t start] returns the offset of the next guaranteed
+	(** [seek_unmapped t start] returns the sector offset of the next guaranteed
 	    zero-filled region (typically guaranteed because it is unmapped) *)
 
 	val seek_mapped: t -> int64 -> [ `Ok of int64 | `Error of error ] io
-	(** [seek_mapped t start] returns the offset of the next regoin of the
+	(** [seek_mapped t start] returns the sector offset of the next regoin of the
 			device which may have data in it (typically this is the next mapped
 			region) *)
 end

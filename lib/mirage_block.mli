@@ -38,7 +38,9 @@ val fold_mapped_s:
 (** Folds [f] across data blocks read sequentially from a block device.
     In contrast to [fold_s], [fold_mapped_s] will use knowledge about the
     underlying disk structure and will skip blocks which it knows contain
-    only zeroes. Note it may still read blocks containing zeroes. *)
+    only zeroes. Note it may still read blocks containing zeroes.
+    The function [f] receives an accumulator, the sector number and a data
+    buffer. *)
 
 val fold_unmapped_s:
   f:('a -> int64 -> Cstruct.t -> 'a Mirage_block_error.result Lwt.t) -> 'a ->

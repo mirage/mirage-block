@@ -56,27 +56,34 @@ let fold_mapped_s ~f init
 
   let open Mirage_block_error.Monad.Infix in
   let rec loop acc next =
+    (* next points to the next mapped chunk (or end of device) *)
     if next >= info.Seekable.size_sectors
     then return (`Ok acc)
     else begin
       Seekable.seek_unmapped s next
-      >>= fun next_unmapped ->
+      >>= fun next_unmapped -> (* 128 *)
+      (* A chunk of data exists between next and next_unmapped *)
       let rec inner acc next =
-        let remaining = Int64.sub info.Seekable.size_sectors next in
-        let mapped = Int64.sub next_unmapped next in
-        let this_time = min (min sectors (Int64.to_int remaining)) (Int64.to_int mapped) in
-        let buf = Cstruct.sub buffer 0 (info.Seekable.sector_size * this_time) in
-        Seekable.read s next [ buf ]
-        >>= fun () ->
-        f acc Int64.(mul next (of_int info.Seekable.sector_size)) buf
-        >>= fun acc ->
-        let next = Int64.(add next (of_int this_time)) in
-        ( if next = next_unmapped
-          then Seekable.seek_mapped s next
-          else Lwt.return (`Ok next) )
-        >>= fun next ->
-        loop acc next in
+        if next >= next_unmapped || next >= info.Seekable.size_sectors
+        then Lwt.return (`Ok (acc, next))
+        else begin
+          let remaining = Int64.sub info.Seekable.size_sectors next in
+          let mapped = Int64.sub next_unmapped next in
+          let this_time = min (min sectors (Int64.to_int remaining)) (Int64.to_int mapped) in
+          let buf = Cstruct.sub buffer 0 (info.Seekable.sector_size * this_time) in
+          Seekable.read s next [ buf ]
+          >>= fun () ->
+          f acc next buf
+          >>= fun acc ->
+          let next = Int64.(add next (of_int this_time)) in
+          inner acc next
+        end in
       inner acc next
+      >>= fun (acc, next) ->
+      (* next points to the next unmapped chunk (or end of device) *)
+      Seekable.seek_mapped s next
+      >>= fun next ->
+      loop acc next
     end in
   Seekable.seek_mapped s 0L
   >>= fun start ->
