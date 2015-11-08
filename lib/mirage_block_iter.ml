@@ -89,15 +89,23 @@ let fold_mapped_s ~f init
   >>= fun start ->
   loop init start
 
-(* If we flip the functions [seek_mapped] and [seek_unmapped] then
-   we can use [fold_mapped_s] to fold over the unmapped data instead *)
-
-module Flip(Input: Mirage_block_s.SEEKABLE) = struct
-  include Input
-  let seek_mapped, seek_unmapped = seek_unmapped, seek_mapped
-end
-
 let fold_unmapped_s ~f init
   (type seekable) (module Seekable: Mirage_block_s.SEEKABLE with type t = seekable) (s: seekable) =
-  let module Flipped = Flip(Seekable) in
-  fold_mapped_s ~f init (module Flipped) s
+  Seekable.get_info s
+  >>= fun info ->
+
+  let open Mirage_block_error.Monad.Infix in
+  let rec loop acc next =
+    (* next points to the next mapped chunk (or end of device) *)
+    if next >= info.Seekable.size_sectors
+    then return (`Ok acc)
+    else begin
+      Seekable.seek_unmapped s next
+      >>= fun next_unmapped ->
+      Seekable.seek_mapped s next_unmapped
+      >>= fun next_mapped ->
+      f acc next_unmapped (Int64.sub next_mapped next_unmapped)
+      >>= fun acc ->
+      loop acc next_mapped
+    end in
+  loop init 0L
