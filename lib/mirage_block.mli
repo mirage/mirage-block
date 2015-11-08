@@ -43,13 +43,13 @@ val fold_mapped_s:
     buffer. *)
 
 val fold_unmapped_s:
-  f:('a -> int64 -> Cstruct.t -> 'a Mirage_block_error.result Lwt.t) -> 'a ->
+  f:('a -> int64 -> int64 -> 'a Mirage_block_error.result Lwt.t) -> 'a ->
   (module Mirage_block_s.SEEKABLE with type t = 'b) -> 'b ->
   'a Mirage_block_error.result Lwt.t
-(** Folds [f] across data blocks read sequentially from a block device.
-    In contrast to [fold_s], [fold_unmapped_s] will use knowledge about the
-    underlying disk structure and will only fold across those blocks which
-    are guaranteed to be zero i.e. those which are unmapped somehow. *)
+(** Folds [f acc ofs len] across offsets of unmapped data blocks read
+    sequentially from the block device. [fold_unmapped_s] will use knowledge
+    about the underlying disk structure and will only fold across those blocks
+    which are guaranteed to be zero i.e. those which are unmapped somehow. *)
 
 val copy:
   (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
