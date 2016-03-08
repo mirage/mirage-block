@@ -26,6 +26,11 @@ let expect_ok_msg = function
   | `Error _ -> failwith "unexpected error"
   | `Ok x -> x
 
+let expect_unknown = function
+  | `Error (`Unknown _) -> ()
+  | `Ok _ -> failwith "unexpected ok"
+  | `Error _ -> failwith "unexpected error"
+
 let ramdisk_compare () =
   let t =
     Ramdisk.connect ~name:"from"
@@ -112,12 +117,50 @@ let sparse_copy () =
     assert_equal ~printer:string_of_int 0 x; return () in
   Lwt_main.run t
 
+let safe_bad_buffer_length () =
+  let t =
+    Ramdisk.connect ~name:"ramdisk"
+    >>= fun x ->
+    let ramdisk = expect_ok "ramdisk" x in
+    let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
+    Ramdisk.get_info ramdisk
+    >>= fun info ->
+    let bad_buffer = Cstruct.create (info.Ramdisk.sector_size + 1) in
+    Safe.read ramdisk 0L [ bad_buffer ]
+    >>= fun x ->
+    expect_unknown x;
+    Safe.write ramdisk 0L [ bad_buffer ]
+    >>= fun x ->
+    expect_unknown x;
+    return () in
+  Lwt_main.run t
+
+let safe_good_buffer_length () =
+  let t =
+    Ramdisk.connect ~name:"ramdisk"
+    >>= fun x ->
+    let ramdisk = expect_ok "ramdisk" x in
+    let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
+    Ramdisk.get_info ramdisk
+    >>= fun info ->
+    let good_buffer = Cstruct.create (info.Ramdisk.sector_size + 0) in
+    Safe.read ramdisk 0L [ good_buffer ]
+    >>= fun x ->
+    expect_ok "Safe.read" x;
+    Safe.write ramdisk 0L [ good_buffer ]
+    >>= fun x ->
+    expect_ok "Safe.write" x;
+    return () in
+  Lwt_main.run t
+
 let tests = [
   "ramdisk compare" >:: ramdisk_compare;
   "different compare" >:: different_compare;
   "copy empty ramdisk" >:: basic_copy;
   "copy a random disk" >:: random_copy;
   "sparse copy an empty disk" >:: sparse_copy;
+  "safe wrapper catches bad buffer lengths" >:: safe_bad_buffer_length;
+  "safe wrapper accepts good buffer lengths" >:: safe_good_buffer_length;
 ]
 
 let _ =
