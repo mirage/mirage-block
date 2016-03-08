@@ -13,7 +13,7 @@ Library mirage_block
   Path:               lib
   Findlibname:        mirage-block
   Modules:            Mirage_block_s, Mirage_block_error, Mirage_block_monad, Mirage_block, Mirage_block_copy, Mirage_block_patterns, Mirage_block_compare, Mirage_block_iter
-  BuildDepends:       cstruct, io-page, mirage-types.lwt, lwt
+  BuildDepends:       cstruct, io-page, mirage-types.lwt, lwt, logs
 
 Document mirage_block
   Title:                Mirage block documentation

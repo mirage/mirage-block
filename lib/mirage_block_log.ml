@@ -1,5 +1,5 @@
 (*
- * Copyright (C) 2015 David Scott <dave.scott@unikernel.com>
+ * Copyright (C) 2016 David Scott <dave.scott@docker.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,20 +15,11 @@
  *
  *)
 
-module Error = Mirage_block_error
+let src =
+   let src = Logs.Src.create "mirage-block" ~doc:"Mirage BLOCK interface" in
+   Logs.Src.set_level src (Some Logs.Info);
+   src
 
-let fold_s = Mirage_block_iter.fold_s
+ module Log = (val Logs.src_log src : Logs.LOG)
 
-let fold_mapped_s = Mirage_block_iter.fold_mapped_s
-
-let fold_unmapped_s = Mirage_block_iter.fold_unmapped_s
-
-let compare = Mirage_block_compare.compare
-
-let copy = Mirage_block_copy.copy
-
-let sparse_copy = Mirage_block_copy.sparse_copy
-
-let random = Mirage_block_patterns.random
-
-module Make_safe_BLOCK = Mirage_block_safe.BLOCK
+ include Log
