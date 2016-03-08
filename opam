@@ -24,6 +24,7 @@ depends: [
   "cstruct"
   "mirage-types-lwt"
   "lwt"
+  "logs"
   "ocamlfind" {build}
   "oasis" {build}
   "ounit" {test}

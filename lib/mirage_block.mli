@@ -83,3 +83,23 @@ val random:
   (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
   [ `Ok of unit | `Error of [> `Msg of string ]] Lwt.t
 (** Fill a block device with pseudorandom data *)
+
+module Make_safe_BLOCK(B: V1_LWT.BLOCK): sig
+  include V1_LWT.BLOCK
+    with type t = B.t
+
+  val unsafe_read: t -> int64 -> page_aligned_buffer list -> unit Mirage_block_error.result Lwt.t
+  (** [unsafe_read] is like [read] except it bypasses the necessary buffer
+      precondition checks. Only use this if you want maximum performance and if
+      you can prove the preconditions are respected. *)
+
+  val unsafe_write: t -> int64 -> page_aligned_buffer list -> unit Mirage_block_error.result Lwt.t
+  (** [unsafe_write] is like [write] except it bypasses the necessary buffer
+      precondition checks. Only use this if you want maximum performance and if
+      you can prove the buffer preconditions are respected. *)
+
+end
+(** Construct a safe wrapper around [B] where necessary buffer preconditions
+    are checked on [read] and [write], and useful error messages generated.
+    Some concrete implementations generate confusing errors (e.g. Unix
+    might say "EINVAL") which are harder to debug. *)
