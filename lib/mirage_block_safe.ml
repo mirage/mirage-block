@@ -41,6 +41,11 @@ let rec check_buffers op sector_size = function
     >>= fun () ->
     check_buffers op sector_size bs
 
+let check_in_range op size_sectors offset =
+  if offset < 0L || offset >= size_sectors
+  then fatalf "%s: sector offset out of range 0 <= %Ld < %Ld" op offset size_sectors
+  else Lwt.return (`Ok ())
+
 module BLOCK(B: V1_LWT.BLOCK) = struct
   include B
 
@@ -54,6 +59,8 @@ module BLOCK(B: V1_LWT.BLOCK) = struct
     let open Mirage_block_monad.Infix in
     check_buffers "read" info.sector_size buffers
     >>= fun () ->
+    check_in_range "read" info.size_sectors offset
+    >>= fun () ->
     unsafe_read t offset buffers
 
   let write t offset buffers =
@@ -62,6 +69,8 @@ module BLOCK(B: V1_LWT.BLOCK) = struct
     >>= fun info ->
     let open Mirage_block_monad.Infix in
     check_buffers "write" info.sector_size buffers
+    >>= fun () ->
+    check_in_range "write" info.size_sectors offset
     >>= fun () ->
     unsafe_write t offset buffers
 end

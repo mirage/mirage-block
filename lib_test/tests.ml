@@ -153,6 +153,40 @@ let safe_good_buffer_length () =
     return () in
   Lwt_main.run t
 
+let safe_bad_sector_start () =
+  let t =
+    Ramdisk.connect ~name:"ramdisk"
+    >>= fun x ->
+    let ramdisk = expect_ok "ramdisk" x in
+    let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
+    Ramdisk.get_info ramdisk
+    >>= fun info ->
+    Safe.read ramdisk (-1L) []
+    >>= fun x ->
+    expect_unknown x;
+    Safe.write ramdisk (-1L) []
+    >>= fun x ->
+    expect_unknown x;
+    return () in
+  Lwt_main.run t
+
+let safe_good_sector_start () =
+  let t =
+    Ramdisk.connect ~name:"ramdisk"
+    >>= fun x ->
+    let ramdisk = expect_ok "ramdisk" x in
+    let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
+    Ramdisk.get_info ramdisk
+    >>= fun info ->
+    Safe.read ramdisk 0L []
+    >>= fun x ->
+    expect_ok "Safe.read" x;
+    Safe.write ramdisk 0L []
+    >>= fun x ->
+    expect_ok "Safe.write" x;
+    return () in
+  Lwt_main.run t
+
 let tests = [
   "ramdisk compare" >:: ramdisk_compare;
   "different compare" >:: different_compare;
@@ -161,6 +195,8 @@ let tests = [
   "sparse copy an empty disk" >:: sparse_copy;
   "safe wrapper catches bad buffer lengths" >:: safe_bad_buffer_length;
   "safe wrapper accepts good buffer lengths" >:: safe_good_buffer_length;
+  "safe wrapper catches bad sector start" >:: safe_bad_sector_start;
+  "safe wrapper accepts good sector start" >:: safe_good_sector_start;
 ]
 
 let _ =
