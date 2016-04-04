@@ -61,6 +61,11 @@ module BLOCK(B: V1_LWT.BLOCK) = struct
     >>= fun () ->
     check_in_range "read" info.size_sectors offset
     >>= fun () ->
+    let length = List.fold_left (fun acc b -> Cstruct.len b + acc) 0 buffers in
+    let next_sector = Int64.(add offset (of_int @@ length / info.B.sector_size)) in
+    if next_sector > info.B.size_sectors
+    then fatalf "read: sector offset out of range %Ld > %Ld" next_sector info.B.size_sectors
+    else
     unsafe_read t offset buffers
 
   let write t offset buffers =
@@ -72,5 +77,10 @@ module BLOCK(B: V1_LWT.BLOCK) = struct
     >>= fun () ->
     check_in_range "write" info.size_sectors offset
     >>= fun () ->
+    let length = List.fold_left (fun acc b -> Cstruct.len b + acc) 0 buffers in
+    let next_sector = Int64.(add offset (of_int @@ length / info.B.sector_size)) in
+    if next_sector > info.B.size_sectors
+    then fatalf "write: sector offset out of range %Ld > %Ld" next_sector info.B.size_sectors
+    else
     unsafe_write t offset buffers
 end

@@ -161,10 +161,11 @@ let safe_bad_sector_start () =
     let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
     Ramdisk.get_info ramdisk
     >>= fun info ->
-    Safe.read ramdisk (-1L) []
+    let sector = Cstruct.create info.Ramdisk.sector_size in
+    Safe.read ramdisk (-1L) [ sector ]
     >>= fun x ->
     expect_unknown x;
-    Safe.write ramdisk (-1L) []
+    Safe.write ramdisk (-1L) [ sector ]
     >>= fun x ->
     expect_unknown x;
     return () in
@@ -187,6 +188,42 @@ let safe_good_sector_start () =
     return () in
   Lwt_main.run t
 
+let safe_bad_sector_end () =
+  let t =
+    Ramdisk.connect ~name:"ramdisk"
+    >>= fun x ->
+    let ramdisk = expect_ok "ramdisk" x in
+    let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
+    Ramdisk.get_info ramdisk
+    >>= fun info ->
+    let sector = Cstruct.create info.Ramdisk.sector_size in
+    Safe.read ramdisk info.Ramdisk.size_sectors [ sector ]
+    >>= fun x ->
+    expect_unknown x;
+    Safe.write ramdisk info.Ramdisk.size_sectors [ sector ]
+    >>= fun x ->
+    expect_unknown x;
+    return () in
+  Lwt_main.run t
+
+let safe_good_sector_end () =
+  let t =
+    Ramdisk.connect ~name:"ramdisk"
+    >>= fun x ->
+    let ramdisk = expect_ok "ramdisk" x in
+    let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
+    Ramdisk.get_info ramdisk
+    >>= fun info ->
+    let sector = Cstruct.create info.Ramdisk.sector_size in
+    Safe.read ramdisk (Int64.pred info.Ramdisk.size_sectors) [ sector ]
+    >>= fun x ->
+    expect_ok "Safe.read" x;
+    Safe.write ramdisk (Int64.pred info.Ramdisk.size_sectors) [ sector ]
+    >>= fun x ->
+    expect_ok "Safe.write" x;
+    return () in
+  Lwt_main.run t
+
 let tests = [
   "ramdisk compare" >:: ramdisk_compare;
   "different compare" >:: different_compare;
@@ -197,6 +234,8 @@ let tests = [
   "safe wrapper accepts good buffer lengths" >:: safe_good_buffer_length;
   "safe wrapper catches bad sector start" >:: safe_bad_sector_start;
   "safe wrapper accepts good sector start" >:: safe_good_sector_start;
+  "safe wrapper catches bad sector end" >:: safe_bad_sector_end;
+  "safe wrapper accepts good sector end" >:: safe_good_sector_end;
 ]
 
 let _ =
