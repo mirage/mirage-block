@@ -41,6 +41,23 @@ let rec check_buffers op sector_size = function
     >>= fun () ->
     check_buffers op sector_size bs
 
+let check_in_range op size_sectors offset =
+  if offset < 0L || offset >= size_sectors
+  then fatalf "%s: sector offset out of range 0 <= %Ld < %Ld" op offset size_sectors
+  else Lwt.return (`Ok ())
+
+let check op sector_size size_sectors offset buffers =
+  let open Mirage_block_monad.Infix in
+  check_buffers op sector_size buffers
+  >>= fun () ->
+  check_in_range op size_sectors offset
+  >>= fun () ->
+  let length = List.fold_left (fun acc b -> Cstruct.len b + acc) 0 buffers in
+  let next_sector = Int64.(add offset (of_int @@ length / sector_size)) in
+  if next_sector > size_sectors
+  then fatalf "%s: sector offset out of range %Ld > %Ld" op next_sector size_sectors
+  else Lwt.return (`Ok ())
+
 module BLOCK(B: V1_LWT.BLOCK) = struct
   include B
 
@@ -52,7 +69,7 @@ module BLOCK(B: V1_LWT.BLOCK) = struct
     B.get_info t
     >>= fun info ->
     let open Mirage_block_monad.Infix in
-    check_buffers "read" info.sector_size buffers
+    check "read" info.sector_size info.size_sectors offset buffers
     >>= fun () ->
     unsafe_read t offset buffers
 
@@ -61,7 +78,7 @@ module BLOCK(B: V1_LWT.BLOCK) = struct
     B.get_info t
     >>= fun info ->
     let open Mirage_block_monad.Infix in
-    check_buffers "write" info.sector_size buffers
+    check "write" info.sector_size info.size_sectors offset buffers
     >>= fun () ->
     unsafe_write t offset buffers
 end
