@@ -33,12 +33,8 @@ let expect_unknown = function
 
 let ramdisk_compare () =
   let t =
-    Ramdisk.connect ~name:"from"
-    >>= fun x ->
-    let from = expect_ok "from" x in
-    Ramdisk.connect ~name:"dest"
-    >>= fun x ->
-    let dest = expect_ok "dest" x in
+    Ramdisk.connect ~name:"from" >>= fun from ->
+    Ramdisk.connect ~name:"dest" >>= fun dest ->
     Mirage_block.compare (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let x = expect_ok_msg x in
@@ -47,15 +43,11 @@ let ramdisk_compare () =
 
 let different_compare () =
   let t =
-    Ramdisk.connect ~name:"from"
-    >>= fun x ->
-    let from = expect_ok "from" x in
+    Ramdisk.connect ~name:"from" >>= fun from ->
     Mirage_block.random (module Ramdisk) from
     >>= fun x ->
     let () = expect_ok "patterns" x in
-    Ramdisk.connect ~name:"dest"
-    >>= fun x ->
-    let dest = expect_ok "dest" x in
+    Ramdisk.connect ~name:"dest" >>= fun dest ->
     Mirage_block.compare (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let x = expect_ok_msg x in
@@ -65,12 +57,8 @@ let different_compare () =
 
 let basic_copy () =
   let t =
-    Ramdisk.connect ~name:"from"
-    >>= fun x ->
-    let from = expect_ok "from" x in
-    Ramdisk.connect ~name:"dest"
-    >>= fun x ->
-    let dest = expect_ok "dest" x in
+    Ramdisk.connect ~name:"from" >>= fun from ->
+    Ramdisk.connect ~name:"dest" >>= fun dest ->
     Mirage_block.copy (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let () = expect_ok_msg x in
@@ -82,15 +70,11 @@ let basic_copy () =
 
 let random_copy () =
   let t =
-    Ramdisk.connect ~name:"from"
-    >>= fun x ->
-    let from = expect_ok "from" x in
+    Ramdisk.connect ~name:"from" >>= fun from ->
     Mirage_block.random (module Ramdisk) from
     >>= fun x ->
     let () = expect_ok "patterns" x in
-    Ramdisk.connect ~name:"dest"
-    >>= fun x ->
-    let dest = expect_ok "dest" x in
+    Ramdisk.connect ~name:"dest" >>= fun dest ->
     Mirage_block.copy (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let () = expect_ok_msg x in
@@ -102,12 +86,8 @@ let random_copy () =
 
 let sparse_copy () =
   let t =
-    Ramdisk.connect ~name:"from"
-    >>= fun x ->
-    let from = expect_ok "from" x in
-    Ramdisk.connect ~name:"dest"
-    >>= fun x ->
-    let dest = expect_ok "dest" x in
+    Ramdisk.connect ~name:"from" >>= fun from ->
+    Ramdisk.connect ~name:"dest" >>= fun dest ->
     Mirage_block.sparse_copy (module Ramdisk) from (module Ramdisk) dest
     >>= fun x ->
     let () = expect_ok_msg x in
@@ -119,9 +99,7 @@ let sparse_copy () =
 
 let safe_bad_buffer_length () =
   let t =
-    Ramdisk.connect ~name:"ramdisk"
-    >>= fun x ->
-    let ramdisk = expect_ok "ramdisk" x in
+    Ramdisk.connect ~name:"ramdisk" >>= fun ramdisk ->
     let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
     Ramdisk.get_info ramdisk
     >>= fun info ->
@@ -137,9 +115,7 @@ let safe_bad_buffer_length () =
 
 let safe_good_buffer_length () =
   let t =
-    Ramdisk.connect ~name:"ramdisk"
-    >>= fun x ->
-    let ramdisk = expect_ok "ramdisk" x in
+    Ramdisk.connect ~name:"ramdisk" >>= fun ramdisk ->
     let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
     Ramdisk.get_info ramdisk
     >>= fun info ->
@@ -155,9 +131,7 @@ let safe_good_buffer_length () =
 
 let safe_bad_sector_start () =
   let t =
-    Ramdisk.connect ~name:"ramdisk"
-    >>= fun x ->
-    let ramdisk = expect_ok "ramdisk" x in
+    Ramdisk.connect ~name:"ramdisk" >>= fun ramdisk ->
     let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
     Ramdisk.get_info ramdisk
     >>= fun info ->
@@ -173,9 +147,7 @@ let safe_bad_sector_start () =
 
 let safe_good_sector_start () =
   let t =
-    Ramdisk.connect ~name:"ramdisk"
-    >>= fun x ->
-    let ramdisk = expect_ok "ramdisk" x in
+    Ramdisk.connect ~name:"ramdisk" >>= fun ramdisk ->
     let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
     Ramdisk.get_info ramdisk
     >>= fun info ->
@@ -190,9 +162,7 @@ let safe_good_sector_start () =
 
 let safe_bad_sector_end () =
   let t =
-    Ramdisk.connect ~name:"ramdisk"
-    >>= fun x ->
-    let ramdisk = expect_ok "ramdisk" x in
+    Ramdisk.connect ~name:"ramdisk" >>= fun ramdisk ->
     let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
     Ramdisk.get_info ramdisk
     >>= fun info ->
@@ -208,9 +178,7 @@ let safe_bad_sector_end () =
 
 let safe_good_sector_end () =
   let t =
-    Ramdisk.connect ~name:"ramdisk"
-    >>= fun x ->
-    let ramdisk = expect_ok "ramdisk" x in
+    Ramdisk.connect ~name:"ramdisk" >>= fun ramdisk ->
     let module Safe = Mirage_block.Make_safe_BLOCK(Ramdisk) in
     Ramdisk.get_info ramdisk
     >>= fun info ->
