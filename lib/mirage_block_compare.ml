@@ -16,12 +16,6 @@
  *)
 open Lwt
 
-let error_to_string = function
-  | `Unknown x -> x
-  | `Unimplemented -> "Unimplemented"
-  | `Is_read_only -> "Is_read_only"
-  | `Disconnected -> "Disconnected"
-
 let compare
   (type from) (module From: V1_LWT.BLOCK with type t = from) (from: from)
   (type dest) (module Dest: V1_LWT.BLOCK with type t = dest) (dest: dest) =
@@ -36,7 +30,7 @@ let compare
   match compare
     (from_info.From.size_sectors, total_size_from)
     (dest_info.Dest.size_sectors, total_size_dest) with
-  | ((-1) | 1) as x -> return (`Ok x)
+  | ((-1) | 1) as x -> return (Ok x)
   | _ ->
 
     let from_buffer = Io_page.(to_cstruct (get 8)) in
@@ -45,7 +39,7 @@ let compare
 
     let rec loop next =
       if next >= from_info.From.size_sectors
-      then return (`Ok 0)
+      then return (Ok 0)
       else begin
         let remaining = Int64.sub from_info.From.size_sectors next in
         let this_time = min sectors (Int64.to_int remaining) in
@@ -53,17 +47,15 @@ let compare
         let dest_buf = Cstruct.sub dest_buffer 0 (dest_info.Dest.sector_size * this_time) in
         From.read from next [ from_buf ]
         >>= function
-        | `Error e ->
-          return (`Error (`Msg (error_to_string e)))
-        | `Ok () ->
+        | Error _ as e -> return e
+        | Ok () ->
           Dest.read dest next [ dest_buf ]
           >>= function
-          | `Error e ->
-            return (`Error (`Msg (error_to_string e)))
-          | `Ok () ->
+          | Error _ as e -> return e
+          | Ok () ->
             match Cstruct.compare from_buf dest_buf with
             | 0 ->
               loop Int64.(add next (of_int this_time))
-            | x -> return (`Ok x)
+            | x -> return (Ok x)
       end in
     loop 0L

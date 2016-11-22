@@ -15,8 +15,6 @@
  *
  *)
 
-module Error = Mirage_block_error
-
 let fold_s = Mirage_block_iter.fold_s
 
 let fold_mapped_s = Mirage_block_iter.fold_mapped_s

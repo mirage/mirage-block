@@ -17,24 +17,22 @@
 
 (** Utility functions over Mirage [BLOCK] devices *)
 
-module Error = Mirage_block_error
-
 val compare:
   (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
   (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
-  [ `Ok of int | `Error of [> `Msg of string ]] Lwt.t
+  (int, V1.Block.error) result Lwt.t
 (** Compare the contents of two block devices. *)
 
 val fold_s:
   f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -> 'a ->
   (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
-  [ `Ok of 'a | `Error of [> `Msg of string ]] Lwt.t
+  ( 'a , V1.Block.error) result Lwt.t
 (** Folds [f] across blocks read sequentially from a block device *)
 
 val fold_mapped_s:
-  f:('a -> int64 -> Cstruct.t -> 'a Mirage_block_error.result Lwt.t) -> 'a ->
+  f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -> 'a ->
   (module Mirage_block_s.SEEKABLE with type t = 'b) -> 'b ->
-  'a Mirage_block_error.result Lwt.t
+  ('a, V1.Block.error) result Lwt.t
 (** Folds [f] across data blocks read sequentially from a block device.
     In contrast to [fold_s], [fold_mapped_s] will use knowledge about the
     underlying disk structure and will skip blocks which it knows contain
@@ -43,9 +41,9 @@ val fold_mapped_s:
     buffer. *)
 
 val fold_unmapped_s:
-  f:('a -> int64 -> int64 -> 'a Mirage_block_error.result Lwt.t) -> 'a ->
+  f:('a -> int64 -> int64 -> 'a Lwt.t) -> 'a ->
   (module Mirage_block_s.SEEKABLE with type t = 'b) -> 'b ->
-  'a Mirage_block_error.result Lwt.t
+  ('a, V1.Block.error) result Lwt.t
 (** Folds [f acc ofs len] across offsets of unmapped data blocks read
     sequentially from the block device. [fold_unmapped_s] will use knowledge
     about the underlying disk structure and will only fold across those blocks
@@ -54,7 +52,7 @@ val fold_unmapped_s:
 val copy:
   (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
   (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
-  [ `Ok of unit | `Error of [> `Msg of string | `Is_read_only | `Different_sizes ]] Lwt.t
+  (unit, [> `Msg of string | `Is_read_only | `Different_sizes ]) result Lwt.t
 (** Copy all data from a source BLOCK device to a destination BLOCK device.
 
     Fails with `Different_sizes if the source and destination are not exactly
@@ -66,7 +64,7 @@ val copy:
 val sparse_copy:
   (module Mirage_block_s.SEEKABLE with type t = 'a) -> 'a ->
   (module V1_LWT.BLOCK with type t = 'b) -> 'b ->
-  [ `Ok of unit | `Error of [> `Msg of string | `Is_read_only | `Different_sizes ]] Lwt.t
+  (unit, [> `Msg of string | `Is_read_only | `Different_sizes ]) result Lwt.t
 (** Copy all mapped data from a source SEEKABLE device to a destination BLOCK device.
 
     This function will preserve sparseness information in the source disk. The
@@ -81,19 +79,19 @@ val sparse_copy:
 
 val random:
   (module V1_LWT.BLOCK with type t = 'a) -> 'a ->
-  [ `Ok of unit | `Error of [> `Msg of string ]] Lwt.t
+  (unit, V1.Block.write_error) result Lwt.t
 (** Fill a block device with pseudorandom data *)
 
 module Make_safe_BLOCK(B: V1_LWT.BLOCK): sig
   include V1_LWT.BLOCK
     with type t = B.t
 
-  val unsafe_read: t -> int64 -> page_aligned_buffer list -> unit Mirage_block_error.result Lwt.t
+  val unsafe_read: t -> int64 -> page_aligned_buffer list -> (unit, V1.Block.error) result Lwt.t
   (** [unsafe_read] is like [read] except it bypasses the necessary buffer
       precondition checks. Only use this if you want maximum performance and if
       you can prove the preconditions are respected. *)
 
-  val unsafe_write: t -> int64 -> page_aligned_buffer list -> unit Mirage_block_error.result Lwt.t
+  val unsafe_write: t -> int64 -> page_aligned_buffer list -> (unit, V1.Block.write_error) result Lwt.t
   (** [unsafe_write] is like [write] except it bypasses the necessary buffer
       precondition checks. Only use this if you want maximum performance and if
       you can prove the buffer preconditions are respected. *)

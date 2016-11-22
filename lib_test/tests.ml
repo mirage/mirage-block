@@ -18,18 +18,18 @@ open Lwt
 open OUnit
 
 let expect_ok msg = function
-  | `Error _ -> failwith msg
-  | `Ok x -> x
+  | Error _ -> failwith msg
+  | Ok x -> x
 
 let expect_ok_msg = function
-  | `Error (`Msg m) -> failwith m
-  | `Error _ -> failwith "unexpected error"
-  | `Ok x -> x
+  | Error (`Msg m) -> failwith m
+  | Error _ -> failwith "unexpected error"
+  | Ok x -> x
 
 let expect_unknown = function
-  | `Error (`Unknown _) -> ()
-  | `Ok _ -> failwith "unexpected ok"
-  | `Error _ -> failwith "unexpected error"
+  | Error (`Msg _) -> ()
+  | Ok _ -> failwith "unexpected ok"
+  | Error _ -> failwith "unexpected error"
 
 let ramdisk_compare () =
   let t =
