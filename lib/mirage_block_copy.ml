@@ -16,20 +16,14 @@
  *)
 open Lwt
 
-let error_to_string = function
-  | `Unknown x -> x
-  | `Unimplemented -> "Unimplemented"
-  | `Is_read_only -> "Is_read_only"
-  | `Disconnected -> "Disconnected"
-
 module Make_seekable(B: V1_LWT.BLOCK) = struct
   include B
 
-  let seek_mapped t sector = Lwt.return (`Ok sector)
+  let seek_mapped t sector = Lwt.return (Ok sector)
   let seek_unmapped t _ =
     B.get_info t
     >>= fun info ->
-    Lwt.return (`Ok info.B.size_sectors)
+    Lwt.return (Ok info.B.size_sectors)
 end
 
 let sparse_copy
@@ -44,7 +38,7 @@ let sparse_copy
   let total_size_from = Int64.(mul from_info.From.size_sectors (of_int from_info.From.sector_size)) in
   let total_size_dest = Int64.(mul dest_info.Dest.size_sectors (of_int dest_info.Dest.sector_size)) in
   if total_size_from <> total_size_dest
-  then return (`Error `Different_sizes)
+  then return (Error `Different_sizes)
   else begin
 
     (* We'll run multiple threads to try to overlap I/O *)
@@ -76,7 +70,7 @@ let sparse_copy
         if next_from >= from_info.From.size_sectors
         then return ()
         else begin
-          (* Copy from [next_from, next_from + from_sectors], ommitting
+          (* Copy from [next_from, next_from + from_sectors], omitting
              unmapped subregions *)
           let rec inner x y =
             if x >= Int64.(add next_from (of_int from_sectors)) || x >= from_info.From.size_sectors
@@ -84,17 +78,17 @@ let sparse_copy
             else begin
               From.seek_mapped from x
               >>= function
-              | `Error e ->
-                record_failure (error_to_string e)
-              | `Ok x' ->
+              | Error e ->
+                record_failure @@ Format.asprintf "%a" Mirage_pp.pp_block_error e
+              | Ok x' ->
                 if x' > x
                 then inner x' Int64.(add y (sub x' x))
                 else begin
                   From.seek_unmapped from x
                   >>= function
-                  | `Error e ->
-                    record_failure (error_to_string e)
-                  | `Ok next_unmapped ->
+                  | Error e ->
+                    record_failure @@ Format.asprintf "%a" Mirage_pp.pp_block_error e
+                  | Ok next_unmapped ->
                     (* Copy up to the unmapped block, or the end of our chunk... *)
                     let copy_up_to = min next_unmapped Int64.(add next_from (of_int from_sectors)) in
                     let remaining = Int64.sub copy_up_to x in
@@ -102,14 +96,14 @@ let sparse_copy
                     let buf = Cstruct.sub buffer 0 (from_info.From.sector_size * this_time) in
                     From.read from x [ buf ]
                     >>= function
-                    | `Error e ->
-                      record_failure (error_to_string e)
-                    | `Ok () ->
+                    | Error e ->
+                      record_failure @@ Format.asprintf "%a" Mirage_pp.pp_block_error e
+                    | Ok () ->
                       Dest.write dest y [ buf ]
                       >>= function
-                      | `Error e ->
-                        record_failure (error_to_string e)
-                      | `Ok () ->
+                      | Error e ->
+                        record_failure (Format.asprintf "%a" Mirage_pp.pp_block_write_error e)
+                      | Ok () ->
                         inner Int64.(add x (of_int this_time)) Int64.(add y (of_int this_time))
                   end
             end in
@@ -120,8 +114,8 @@ let sparse_copy
     Lwt.join threads
     >>= fun () ->
     match !failure with
-    | None -> return (`Ok ())
-    | Some msg -> return (`Error (`Msg msg))
+    | None -> return (Ok ())
+    | Some msg -> return (Error (`Msg msg))
   end
 
 let copy

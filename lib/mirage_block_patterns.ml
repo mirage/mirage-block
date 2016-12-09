@@ -16,12 +16,6 @@
  *)
 open Lwt
 
-let error_to_string = function
-  | `Unknown x -> x
-  | `Unimplemented -> "Unimplemented"
-  | `Is_read_only -> "Is_read_only"
-  | `Disconnected -> "Disconnected"
-
 let random
   (type block) (module Block: V1_LWT.BLOCK with type t = block) (b: block) =
   Block.get_info b
@@ -31,7 +25,7 @@ let random
 
   let rec loop next =
     if next >= info.Block.size_sectors
-    then return (`Ok ())
+    then return (Ok ())
     else begin
       let remaining = Int64.sub info.Block.size_sectors next in
       let this_time = min sectors (Int64.to_int remaining) in
@@ -41,9 +35,8 @@ let random
       done;
       Block.write b next [ buf ]
       >>= function
-      | `Error e ->
-        return (`Error (`Msg (error_to_string e)))
-      | `Ok () ->
+      | Error _ as e -> return e
+      | Ok () ->
         loop Int64.(add next (of_int this_time))
     end in
   loop 0L

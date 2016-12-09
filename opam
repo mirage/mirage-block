@@ -22,9 +22,11 @@ remove: [["ocamlfind" "remove" "mirage-block"]]
 depends: [
   "base-bytes"
   "cstruct"
-  "mirage-types-lwt"
+  "mirage-types-lwt" { >= "3.0.0" }
+  "mirage-runtime"
   "lwt"
   "logs"
+  "ocamlbuild" {build}
   "ocamlfind" {build}
   "oasis" {build}
   "ounit" {test}
