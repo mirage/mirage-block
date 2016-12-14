@@ -1,6 +1,6 @@
 OASISFormat: 0.3
 Name:        mirage-block
-Version:     0.2
+Version:     0.3
 Synopsis:    Mirage block implementations
 Authors:     David Scott
 License:     ISC
