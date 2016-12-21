@@ -127,6 +127,9 @@ module Sparse_copy (A: SEEKABLE) (B: S): sig
   type error = private [> `Is_read_only | `Different_sizes]
   (** The type for copy errors. *)
 
+  val pp_error: error Fmt.t
+  (** [pp_error] is the pretty-printer for errors. *)
+
   val v: src:A.t -> dst:B.t -> (unit, error) result Lwt.t
   (** Copy all mapped data from a source SEEKABLE device to a
       destination BLOCK device.
