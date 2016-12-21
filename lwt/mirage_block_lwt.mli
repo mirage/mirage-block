@@ -166,7 +166,12 @@ module Make_safe (B: S): sig
   type error = private [> Mirage_block.error | `Unsafe of string]
   (** The type for errors. *)
 
-  include S with type t = B.t and type error := error
+  type write_error = private [> Mirage_block.write_error | `Unsafe of string]
+  (** The type for write errors. *)
+
+  include S with type t = B.t
+             and type error := error
+             and type write_error := write_error
 
   val unsafe_read: t -> int64 -> page_aligned_buffer list ->
     (unit, B.error) result Lwt.t
