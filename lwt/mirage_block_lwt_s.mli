@@ -15,24 +15,18 @@
  *
  *)
 
+
+module type S = Mirage_block.S
+  with type 'a io = 'a Lwt.t
+   and type page_aligned_buffer = Cstruct.t
+
 module type SEEKABLE = sig
-  include V1_LWT.BLOCK
-
-	val seek_unmapped: t -> int64 -> (int64, error) result io
-	(** [seek_unmapped t start] returns the sector offset of the next guaranteed
-	    zero-filled region (typically guaranteed because it is unmapped) *)
-
-	val seek_mapped: t -> int64 -> (int64, error) result io
-	(** [seek_mapped t start] returns the sector offset of the next regoin of the
-			device which may have data in it (typically this is the next mapped
-			region) *)
+  include S
+  val seek_unmapped: t -> int64 -> (int64, error) result io
+  val seek_mapped: t -> int64 -> (int64, error) result io
 end
 
 module type RESIZABLE = sig
-  include V1_LWT.BLOCK
-
-	val resize : t -> int64 -> (unit, error) result io
-	(** [resize t new_size_sectors] attempts to resize the connected device
-	    to have the given number of sectors. If successful, subsequent calls
-	    to [get_info] will reflect the new size. *)
+  include S
+  val resize : t -> int64 -> (unit, error) result io
 end

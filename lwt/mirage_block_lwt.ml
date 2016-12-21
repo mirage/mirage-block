@@ -15,18 +15,11 @@
  *
  *)
 
-let fold_s = Mirage_block_iter.fold_s
-
-let fold_mapped_s = Mirage_block_iter.fold_mapped_s
-
-let fold_unmapped_s = Mirage_block_iter.fold_unmapped_s
-
-let compare = Mirage_block_compare.compare
-
-let copy = Mirage_block_copy.copy
-
-let sparse_copy = Mirage_block_copy.sparse_copy
-
-let random = Mirage_block_patterns.random
-
-module Make_safe_BLOCK = Mirage_block_safe.BLOCK
+include Mirage_block_lwt_s
+module Fold = Mirage_block_iter.Fold
+module Fast_fold = Mirage_block_iter.Fast_fold
+module Compare = Mirage_block_compare.Compare
+module Copy = Mirage_block_copy.Copy
+module Sparse = Mirage_block_copy.Sparse
+module Fill = Mirage_block_patterns.Fill
+module Make_safe = Mirage_block_safe.Make
