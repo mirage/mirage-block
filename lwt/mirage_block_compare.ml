@@ -27,7 +27,7 @@ module Compare (From: S) (Dest: S) = struct
     | `A e -> From.pp_error ppf e
     | `B e -> Dest.pp_error ppf e
 
-  let compare (from: From.t) (dest: Dest.t) =
+  let v (from: From.t) (dest: Dest.t) =
 
     From.get_info from
     >>= fun from_info ->

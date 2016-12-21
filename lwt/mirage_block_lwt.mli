@@ -55,7 +55,7 @@ module Compare (A: S) (B: S): sig
   val pp_error: error Fmt.t
   (** [pp_error] is the pretty-printer for compare errors. *)
 
-  val compare: A.t -> B.t -> (int, error) result Lwt.t
+  val v: A.t -> B.t -> (int, error) result Lwt.t
   (** Compare the contents of two block devices. *)
 
 end
@@ -63,7 +63,7 @@ end
 (** {1 Fold over the bytes of a block device} *)
 module Fold (A: S): sig
 
-  val fold_s:
+  val s:
     f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -> 'a -> A.t ->
     ('a , A.error) result Lwt.t
   (** Folds [f] across blocks read sequentially from a block device *)
@@ -76,21 +76,21 @@ end
     devices.  *)
 module Fast_fold (A: SEEKABLE): sig
 
-  val fold_mapped_s:
+  val mapped_s:
     f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -> 'a -> A.t ->
     ('a, A.error) result Lwt.t
   (** Folds [f] across data blocks read sequentially from a block
-      device.  In contrast to [fold_s], [fold_mapped_s] will use
+      device.  In contrast to [fold_s], [Fold.mapped_s] will use
       knowledge about the underlying disk structure and will skip
       blocks which it knows contain only zeroes. Note it may still
       read blocks containing zeroes. The function [f] receives an
       accumulator, the sector number and a data buffer. *)
 
-  val fold_unmapped_s:
+  val unmapped_s:
     f:('a -> int64 -> int64 -> 'a Lwt.t) -> 'a -> A.t ->
     ('a, A.error) result Lwt.t
   (** Folds [f acc ofs len] across offsets of unmapped data blocks
-      read sequentially from the block device. [fold_unmapped_s] will
+      read sequentially from the block device. [Fold.unmapped_s] will
       use knowledge about the underlying disk structure and will only
       fold across those blocks which are guaranteed to be zero
       i.e. those which are unmapped somehow. *)
@@ -106,7 +106,7 @@ module Copy (A: S) (B: S): sig
   val pp_error: error Fmt.t
   (** [pp_error] is the pretty-printer for copy errors. *)
 
-  val copy: A.t -> B.t -> (unit, error) result Lwt.t
+  val v: src:A.t -> dst:B.t -> (unit, error) result Lwt.t
   (** Copy all data from a source BLOCK device to a destination BLOCK
       device.
 
@@ -122,12 +122,12 @@ end
 
     This functor use seeks operation to perform fast sparse copy
     between blocks. *)
-module Sparse (A: SEEKABLE) (B: S): sig
+module Sparse_copy (A: SEEKABLE) (B: S): sig
 
   type error = private [> `Is_read_only | `Different_sizes]
   (** The type for copy errors. *)
 
-  val copy: A.t -> B.t -> (unit, error) result Lwt.t
+  val v: src:A.t -> dst:B.t -> (unit, error) result Lwt.t
   (** Copy all mapped data from a source SEEKABLE device to a
       destination BLOCK device.
 

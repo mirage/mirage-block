@@ -22,7 +22,7 @@ let (>>*=) x f = x >>= function | Ok q -> f q | Error e -> Lwt.return @@ Error e
 
 module Fold (Block: S) = struct
 
-  let fold_s ~f init (b: Block.t) =
+  let s ~f init (b: Block.t) =
     Block.get_info b
     >>= fun info ->
     let buffer = Io_page.(to_cstruct (get 8)) in
@@ -47,7 +47,7 @@ end
 
 module Fast_fold (Seekable: SEEKABLE) = struct
 
-  let fold_mapped_s ~f init (s: Seekable.t) =
+  let mapped_s ~f init (s: Seekable.t) =
     Seekable.get_info s
     >>= fun info ->
     let buffer = Io_page.(to_cstruct (get 8)) in
@@ -85,7 +85,7 @@ module Fast_fold (Seekable: SEEKABLE) = struct
       end in
     Seekable.seek_mapped s 0L >>*= fun start -> loop init start
 
-  let fold_unmapped_s ~f init (s: Seekable.t) =
+  let unmapped_s ~f init (s: Seekable.t) =
     Seekable.get_info s
     >>= fun info ->
 

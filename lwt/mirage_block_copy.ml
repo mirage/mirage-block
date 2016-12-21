@@ -28,7 +28,7 @@ module Make_seekable(B: S) = struct
     Lwt.return (Ok info.Mirage_block.size_sectors)
 end
 
-module Sparse (From: SEEKABLE) (Dest: S) = struct
+module Sparse_copy (From: SEEKABLE) (Dest: S) = struct
 
   module B = Mirage_block
 
@@ -43,7 +43,7 @@ module Sparse (From: SEEKABLE) (Dest: S) = struct
     | `A e             -> From.pp_error ppf e
     | `B e             -> Dest.pp_write_error ppf e
 
-  let copy (from: From.t) (dest: Dest.t) =
+  let v ~src:(from: From.t) ~dst:(dest: Dest.t) =
 
     From.get_info from
     >>= fun from_info ->
@@ -141,8 +141,8 @@ end
 
 module Copy (From: S) (Dest: S) = struct
   module From_seekable = Make_seekable(From)
-  module Sparse = Sparse (From_seekable)(Dest)
-  type error = Sparse.error
-  let pp_error = Sparse.pp_error
-  let copy (from: From.t) (dest: Dest.t) = Sparse.copy from dest
+  module Sparse_copy = Sparse_copy (From_seekable)(Dest)
+  type error = Sparse_copy.error
+  let pp_error = Sparse_copy.pp_error
+  let v ~src ~dst = Sparse_copy.v ~src ~dst
 end

@@ -20,6 +20,6 @@ module Fold = Mirage_block_iter.Fold
 module Fast_fold = Mirage_block_iter.Fast_fold
 module Compare = Mirage_block_compare.Compare
 module Copy = Mirage_block_copy.Copy
-module Sparse = Mirage_block_copy.Sparse
+module Sparse_copy = Mirage_block_copy.Sparse_copy
 module Fill = Mirage_block_patterns.Fill
 module Make_safe = Mirage_block_safe.Make
