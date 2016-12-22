@@ -17,6 +17,7 @@
 
 open Lwt.Infix
 open Mirage_block_lwt_s
+open Result
 
 module Make_seekable(B: S) = struct
   include B

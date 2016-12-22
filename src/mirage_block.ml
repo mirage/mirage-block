@@ -15,6 +15,8 @@
  *
  *)
 
+open Result
+
 type error = Mirage_device.error
 
 type write_error = [error | `Is_read_only]

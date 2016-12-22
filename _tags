@@ -1,5 +1,5 @@
 true : bin_annot, safe_string, package(bytes)
 true: warn_error(+1..49-34), warn(A-4-41-44)
 
-<src/*>: package(mirage-device)
-<lwt/*>: package(mirage-block lwt cstruct io-page logs)
+<src/*>: package(mirage-device result)
+<lwt/*>: package(mirage-block lwt cstruct io-page logs result)

@@ -15,6 +15,7 @@
  *
  *)
 
+open Result
 
 module type S = Mirage_block.S
   with type 'a io = 'a Lwt.t

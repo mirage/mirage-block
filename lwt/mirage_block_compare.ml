@@ -17,6 +17,7 @@
 
 open Lwt.Infix
 open Mirage_block_lwt_s
+open Result
 module B = Mirage_block
 
 module Compare (From: S) (Dest: S) = struct
