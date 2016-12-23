@@ -1,14 +1,13 @@
 language: c
-install:
-  - wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-opam.sh
-  - wget https://raw.githubusercontent.com/simonjbeaumont/ocaml-travis-coveralls/master/travis-coveralls.sh
-script: bash -ex .travis-opam.sh && bash -ex travis-coveralls.sh
 sudo: required
+install: wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
+script: bash -ex .travis-opam.sh
 env:
   global:
-    - EXTRA_REMOTES="https://github.com/mirage/mirage-dev.git"
-    - COV_CONF="export TESTS=--enable-tests"
+  - EXTRA_REMOTES="https://github.com/mirage/mirage-dev.git"
+  - PINS="mirage-block:. mirage-block-lwt:."
   matrix:
-    - PACKAGE="mirage-block" OCAML_VERSION=4.02 PINS="mirage-block-ramdisk:git://github.com/mirage/mirage-block-ramdisk"
-    - PACKAGE="mirage-block" OCAML_VERSION=4.03 PINS="mirage-block-ramdisk:git://github.com/mirage/mirage-block-ramdisk"
-    - PACKAGE="mirage-block" OCAML_VERSION=4.04 PINS="mirage-block-ramdisk:git://github.com/mirage/mirage-block-ramdisk"
+  - OCAML_VERSION=4.03 PACKAGE="mirage-block"
+  - OCAML_VERSION=4.03 PACKAGE="mirage-block-lwt"
+  - OCAML_VERSION=4.04 PACKAGE="mirage-block"
+  - OCAML_VERSION=4.04 PACKAGE="mirage-block-lwt"

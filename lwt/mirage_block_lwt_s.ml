@@ -15,18 +15,19 @@
  *
  *)
 
-let fold_s = Mirage_block_iter.fold_s
+open Result
 
-let fold_mapped_s = Mirage_block_iter.fold_mapped_s
+module type S = Mirage_block.S
+  with type 'a io = 'a Lwt.t
+   and type page_aligned_buffer = Cstruct.t
 
-let fold_unmapped_s = Mirage_block_iter.fold_unmapped_s
+module type SEEKABLE = sig
+  include S
+  val seek_unmapped: t -> int64 -> (int64, error) result io
+  val seek_mapped: t -> int64 -> (int64, error) result io
+end
 
-let compare = Mirage_block_compare.compare
-
-let copy = Mirage_block_copy.copy
-
-let sparse_copy = Mirage_block_copy.sparse_copy
-
-let random = Mirage_block_patterns.random
-
-module Make_safe_BLOCK = Mirage_block_safe.BLOCK
+module type RESIZABLE = sig
+  include S
+  val resize : t -> int64 -> (unit, error) result io
+end

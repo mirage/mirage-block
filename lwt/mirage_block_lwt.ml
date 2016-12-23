@@ -15,24 +15,11 @@
  *
  *)
 
-module type SEEKABLE = sig
-  include V1_LWT.BLOCK
-
-	val seek_unmapped: t -> int64 -> (int64, error) result io
-	(** [seek_unmapped t start] returns the sector offset of the next guaranteed
-	    zero-filled region (typically guaranteed because it is unmapped) *)
-
-	val seek_mapped: t -> int64 -> (int64, error) result io
-	(** [seek_mapped t start] returns the sector offset of the next regoin of the
-			device which may have data in it (typically this is the next mapped
-			region) *)
-end
-
-module type RESIZABLE = sig
-  include V1_LWT.BLOCK
-
-	val resize : t -> int64 -> (unit, error) result io
-	(** [resize t new_size_sectors] attempts to resize the connected device
-	    to have the given number of sectors. If successful, subsequent calls
-	    to [get_info] will reflect the new size. *)
-end
+include Mirage_block_lwt_s
+module Fold = Mirage_block_iter.Fold
+module Fast_fold = Mirage_block_iter.Fast_fold
+module Compare = Mirage_block_compare.Compare
+module Copy = Mirage_block_copy.Copy
+module Sparse_copy = Mirage_block_copy.Sparse_copy
+module Fill = Mirage_block_patterns.Fill
+module Make_safe = Mirage_block_safe.Make

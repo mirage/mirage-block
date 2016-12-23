@@ -1,0 +1,7 @@
+description = "Block device implementations for MirageOS, using lwt"
+version = "%%VERSION_NUM%%"
+requires = "mirage-block bytes lwt cstruct logs io-page"
+archive(byte) = "mirage-block-lwt.cma"
+archive(native) = "mirage-block-lwt.cmxa"
+plugin(byte) = "mirage-block-lwt.cma"
+plugin(native) = "mirage-block-lwt.cmxs"

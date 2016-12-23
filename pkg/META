@@ -1,0 +1,7 @@
+description = "Block device signatures for MirageOS"
+version = "%%VERSION_NUM%%"
+requires = "mirage-device"
+archive(byte) = "mirage-block.cma"
+archive(native) = "mirage-block.cmxa"
+plugin(byte) = "mirage-block.cma"
+plugin(native) = "mirage-block.cmxs"
