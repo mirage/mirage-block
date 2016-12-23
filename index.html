@@ -2,88 +2,34 @@
 <html>
 <head>
 <link rel="stylesheet" href="style.css" type="text/css">
-<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Mirage_block_monad.html">
-<link rel="next" href="Mirage_block_copy.html">
-<link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
-<link title="Mirage_block_s" rel="Chapter" href="Mirage_block_s.html">
-<link title="Mirage_block_error" rel="Chapter" href="Mirage_block_error.html">
-<link title="Mirage_block_monad" rel="Chapter" href="Mirage_block_monad.html">
 <link title="Mirage_block" rel="Chapter" href="Mirage_block.html">
-<link title="Mirage_block_copy" rel="Chapter" href="Mirage_block_copy.html">
-<link title="Ramdisk" rel="Chapter" href="Ramdisk.html">
-<link title="Mirage_block_patterns" rel="Chapter" href="Mirage_block_patterns.html">
-<link title="Mirage_block_compare" rel="Chapter" href="Mirage_block_compare.html">
-<link title="Mirage_block_iter" rel="Chapter" href="Mirage_block_iter.html"><title>Mirage_block</title>
+<link title="Mirage_block_lwt" rel="Chapter" href="Mirage_block_lwt.html"><title></title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Mirage_block_monad.html" title="Mirage_block_monad">Previous</a>
-&nbsp;<a class="up" href="index.html" title="Index">Up</a>
-&nbsp;<a class="post" href="Mirage_block_copy.html" title="Mirage_block_copy">Next</a>
+<h1></h1>
+<ul class="indexlist">
+<li><a href="index_types.html">Index of types</a></li>
+<li><a href="index_values.html">Index of values</a></li>
+<li><a href="index_modules.html">Index of modules</a></li>
+<li><a href="index_module_types.html">Index of module types</a></li>
+</ul>
+<br/><br>
+<table class="indextable">
+<tr><td class="module"><a href="Mirage_block.html">Mirage_block</a></td><td><div class="info">
+Block device signatures.
 </div>
-<h1>Module <a href="type_Mirage_block.html">Mirage_block</a></h1>
-
-<pre><span class="keyword">module</span> Mirage_block: <code class="code">sig</code> <a href="Mirage_block.html">..</a> <code class="code">end</code></pre><div class="info module top">
-Utility functions over Mirage <code class="code">BLOCK</code> devices<br>
+</td></tr>
+<tr><td class="module"><a href="Mirage_block_lwt.html">Mirage_block_lwt</a></td><td><div class="info">
+Block device implementatins using lwt
 </div>
-<hr width="100%">
-
-<pre><span class="keyword">module</span> <a href="Mirage_block.Error.html">Error</a>: <code class="type"><a href="Mirage_block_error.html">Mirage_block_error</a></code></pre>
-<pre><span id="VALcompare"><span class="keyword">val</span> compare</span> : <code class="type">(module V1_LWT.BLOCK with type t = 'a) -><br>       'a -><br>       (module V1_LWT.BLOCK with type t = 'b) -><br>       'b -> [ `Error of [> `Msg of string ] | `Ok of int ] Lwt.t</code></pre><div class="info ">
-Compare the contents of two block devices.<br>
-</div>
-
-<pre><span id="VALfold_s"><span class="keyword">val</span> fold_s</span> : <code class="type">f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -><br>       'a -><br>       (module V1_LWT.BLOCK with type t = 'b) -><br>       'b -> [ `Error of [> `Msg of string ] | `Ok of 'a ] Lwt.t</code></pre><div class="info ">
-Folds <code class="code">f</code> across blocks read sequentially from a block device<br>
-</div>
-
-<pre><span id="VALfold_mapped_s"><span class="keyword">val</span> fold_mapped_s</span> : <code class="type">f:('a -> int64 -> Cstruct.t -> 'a <a href="Mirage_block_error.html#TYPEresult">Mirage_block_error.result</a> Lwt.t) -><br>       'a -><br>       (module Mirage_block_s.SEEKABLE with type t = 'b) -><br>       'b -> 'a <a href="Mirage_block_error.html#TYPEresult">Mirage_block_error.result</a> Lwt.t</code></pre><div class="info ">
-Folds <code class="code">f</code> across data blocks read sequentially from a block device.
-    In contrast to <code class="code">fold_s</code>, <code class="code">fold_mapped_s</code> will use knowledge about the
-    underlying disk structure and will skip blocks which it knows contain
-    only zeroes. Note it may still read blocks containing zeroes.<br>
-</div>
-
-<pre><span id="VALfold_unmapped_s"><span class="keyword">val</span> fold_unmapped_s</span> : <code class="type">f:('a -> int64 -> Cstruct.t -> 'a <a href="Mirage_block_error.html#TYPEresult">Mirage_block_error.result</a> Lwt.t) -><br>       'a -><br>       (module Mirage_block_s.SEEKABLE with type t = 'b) -><br>       'b -> 'a <a href="Mirage_block_error.html#TYPEresult">Mirage_block_error.result</a> Lwt.t</code></pre><div class="info ">
-Folds <code class="code">f</code> across data blocks read sequentially from a block device.
-    In contrast to <code class="code">fold_s</code>, <code class="code">fold_unmapped_s</code> will use knowledge about the
-    underlying disk structure and will only fold across those blocks which
-    are guaranteed to be zero i.e. those which are unmapped somehow.<br>
-</div>
-
-<pre><span id="VALcopy"><span class="keyword">val</span> copy</span> : <code class="type">(module V1_LWT.BLOCK with type t = 'a) -><br>       'a -><br>       (module V1_LWT.BLOCK with type t = 'b) -><br>       'b -><br>       [ `Error of [> `Different_sizes | `Is_read_only | `Msg of string ]<br>       | `Ok of unit ] Lwt.t</code></pre><div class="info ">
-Copy all data from a source BLOCK device to a destination BLOCK device.
-<p>
-
-    Fails with `Different_sizes if the source and destination are not exactly
-    the same size.
-<p>
-
-    Fails with `Is_read_only if the destination device is read-only.<br>
-</div>
-
-<pre><span id="VALsparse_copy"><span class="keyword">val</span> sparse_copy</span> : <code class="type">(module Mirage_block_s.SEEKABLE with type t = 'a) -><br>       'a -><br>       (module V1_LWT.BLOCK with type t = 'b) -><br>       'b -><br>       [ `Error of [> `Different_sizes | `Is_read_only | `Msg of string ]<br>       | `Ok of unit ] Lwt.t</code></pre><div class="info ">
-Copy all mapped data from a source SEEKABLE device to a destination BLOCK device.
-<p>
-
-    This function will preserve sparseness information in the source disk. The
-    destination block device must be pre-zeroed, otherwise previous data will
-    "leak through".
-<p>
-
-    Fails with `Different_sizes if the source and destination are not exactly
-    the same size.
-<p>
-
-    Fails with `Is_read_only if the destination device is read-only.<br>
-</div>
-
-<pre><span id="VALrandom"><span class="keyword">val</span> random</span> : <code class="type">(module V1_LWT.BLOCK with type t = 'a) -><br>       'a -> [ `Error of [> `Msg of string ] | `Ok of unit ] Lwt.t</code></pre><div class="info ">
-Fill a block device with pseudorandom data<br>
-</div>
-</body></html>
+</td></tr>
+</table>
+</body>
+</html>

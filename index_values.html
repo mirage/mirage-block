@@ -1,138 +1,150 @@
 <html>
 <head>
 <link rel="stylesheet" href="style.css" type="text/css">
-<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="Start" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Index of module types" rel=Appendix href="index_module_types.html">
-<link title="Mirage_block_s" rel="Chapter" href="Mirage_block_s.html">
-<link title="Mirage_block_error" rel="Chapter" href="Mirage_block_error.html">
-<link title="Mirage_block_monad" rel="Chapter" href="Mirage_block_monad.html">
 <link title="Mirage_block" rel="Chapter" href="Mirage_block.html">
-<link title="Mirage_block_copy" rel="Chapter" href="Mirage_block_copy.html">
-<link title="Ramdisk" rel="Chapter" href="Ramdisk.html">
-<link title="Mirage_block_patterns" rel="Chapter" href="Mirage_block_patterns.html">
-<link title="Mirage_block_compare" rel="Chapter" href="Mirage_block_compare.html">
-<link title="Mirage_block_iter" rel="Chapter" href="Mirage_block_iter.html"><title>Index of values</title>
+<link title="Mirage_block_lwt" rel="Chapter" href="Mirage_block_lwt.html"><title>Index of values</title>
 </head>
 <body>
 <div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
 &nbsp;</div>
 <h1>Index of values</h1>
 <table>
-<tr><td align="left"><br></td></tr>
-<tr><td><a href="Mirage_block_monad.Infix.html#VAL(>>=)">(&gt;&gt;=)</a> [<a href="Mirage_block_monad.Infix.html">Mirage_block_monad.Infix</a>]</td>
-<td></td></tr>
-<tr><td align="left"><br>B</td></tr>
-<tr><td><a href="Mirage_block_monad.html#VALbind">bind</a> [<a href="Mirage_block_monad.html">Mirage_block_monad</a>]</td>
-<td></td></tr>
-<tr><td align="left"><br>C</td></tr>
-<tr><td><a href="Mirage_block_compare.html#VALcompare">compare</a> [<a href="Mirage_block_compare.html">Mirage_block_compare</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block.html#VALcompare">compare</a> [<a href="Mirage_block.html">Mirage_block</a>]</td>
+<tr><td align="left"><br>G</td></tr>
+<tr><td><a href="Mirage_block.S.html#VALget_info">get_info</a> [<a href="Mirage_block.S.html">Mirage_block.S</a>]</td>
 <td><div class="info">
-Compare the contents of two block devices.
+Query the characteristics of a specific block device
 </div>
 </td></tr>
-<tr><td><a href="Ramdisk.html#VALconnect">connect</a> [<a href="Ramdisk.html">Ramdisk</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block_copy.html#VALcopy">copy</a> [<a href="Mirage_block_copy.html">Mirage_block_copy</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block.html#VALcopy">copy</a> [<a href="Mirage_block.html">Mirage_block</a>]</td>
+<tr><td align="left"><br>M</td></tr>
+<tr><td><a href="Mirage_block_lwt.Fast_fold.html#VALmapped_s">mapped_s</a> [<a href="Mirage_block_lwt.Fast_fold.html">Mirage_block_lwt.Fast_fold</a>]</td>
 <td><div class="info">
-Copy all data from a source BLOCK device to a destination BLOCK device.
+Folds <code class="code">f</code> across data blocks read sequentially from a block
+      device.
 </div>
 </td></tr>
-<tr><td><a href="Ramdisk.html#VALcreate">create</a> [<a href="Ramdisk.html">Ramdisk</a>]</td>
+<tr><td align="left"><br>P</td></tr>
+<tr><td><a href="Mirage_block_lwt.Sparse_copy.html#VALpp_error">pp_error</a> [<a href="Mirage_block_lwt.Sparse_copy.html">Mirage_block_lwt.Sparse_copy</a>]</td>
 <td><div class="info">
-Create an in-memory block device (a "ramdisk") with a given name,
-    total size in sectors and sector size.
+<code class="code">pp_error</code> is the pretty-printer for errors.
 </div>
 </td></tr>
-<tr><td align="left"><br>D</td></tr>
-<tr><td><a href="Ramdisk.html#VALdestroy">destroy</a> [<a href="Ramdisk.html">Ramdisk</a>]</td>
+<tr><td><a href="Mirage_block_lwt.Copy.html#VALpp_error">pp_error</a> [<a href="Mirage_block_lwt.Copy.html">Mirage_block_lwt.Copy</a>]</td>
 <td><div class="info">
-Destroy removes an in-memory block device.
+<code class="code">pp_error</code> is the pretty-printer for copy errors.
 </div>
 </td></tr>
-<tr><td align="left"><br>E</td></tr>
-<tr><td><a href="Mirage_block_iter.html#VALerror_to_string">error_to_string</a> [<a href="Mirage_block_iter.html">Mirage_block_iter</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block_compare.html#VALerror_to_string">error_to_string</a> [<a href="Mirage_block_compare.html">Mirage_block_compare</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block_patterns.html#VALerror_to_string">error_to_string</a> [<a href="Mirage_block_patterns.html">Mirage_block_patterns</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block_copy.html#VALerror_to_string">error_to_string</a> [<a href="Mirage_block_copy.html">Mirage_block_copy</a>]</td>
-<td></td></tr>
-<tr><td align="left"><br>F</td></tr>
-<tr><td><a href="Mirage_block_iter.html#VALfold_mapped_s">fold_mapped_s</a> [<a href="Mirage_block_iter.html">Mirage_block_iter</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block.html#VALfold_mapped_s">fold_mapped_s</a> [<a href="Mirage_block.html">Mirage_block</a>]</td>
+<tr><td><a href="Mirage_block_lwt.Compare.html#VALpp_error">pp_error</a> [<a href="Mirage_block_lwt.Compare.html">Mirage_block_lwt.Compare</a>]</td>
 <td><div class="info">
-Folds <code class="code">f</code> across data blocks read sequentially from a block device.
+<code class="code">pp_error</code> is the pretty-printer for compare errors.
 </div>
 </td></tr>
-<tr><td><a href="Mirage_block_iter.html#VALfold_s">fold_s</a> [<a href="Mirage_block_iter.html">Mirage_block_iter</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block.html#VALfold_s">fold_s</a> [<a href="Mirage_block.html">Mirage_block</a>]</td>
+<tr><td><a href="Mirage_block.S.html#VALpp_error">pp_error</a> [<a href="Mirage_block.S.html">Mirage_block.S</a>]</td>
 <td><div class="info">
-Folds <code class="code">f</code> across blocks read sequentially from a block device
+<code class="code">pp_error</code> is the pretty-printer for errors.
 </div>
 </td></tr>
-<tr><td><a href="Mirage_block_iter.html#VALfold_unmapped_s">fold_unmapped_s</a> [<a href="Mirage_block_iter.html">Mirage_block_iter</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block.html#VALfold_unmapped_s">fold_unmapped_s</a> [<a href="Mirage_block.html">Mirage_block</a>]</td>
+<tr><td><a href="Mirage_block.html#VALpp_error">pp_error</a> [<a href="Mirage_block.html">Mirage_block</a>]</td>
 <td><div class="info">
-Folds <code class="code">f</code> across data blocks read sequentially from a block device.
+<code class="code">pp_error</code> pretty-prints errors.
+</div>
+</td></tr>
+<tr><td><a href="Mirage_block.S.html#VALpp_write_error">pp_write_error</a> [<a href="Mirage_block.S.html">Mirage_block.S</a>]</td>
+<td><div class="info">
+<code class="code">pp_write_error</code> is the pretty-printer for write errors.
+</div>
+</td></tr>
+<tr><td><a href="Mirage_block.html#VALpp_write_error">pp_write_error</a> [<a href="Mirage_block.html">Mirage_block</a>]</td>
+<td><div class="info">
+<code class="code">pp_write_error</code> pretty-prints errors.
 </div>
 </td></tr>
 <tr><td align="left"><br>R</td></tr>
-<tr><td><a href="Mirage_block_patterns.html#VALrandom">random</a> [<a href="Mirage_block_patterns.html">Mirage_block_patterns</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block.html#VALrandom">random</a> [<a href="Mirage_block.html">Mirage_block</a>]</td>
+<tr><td><a href="Mirage_block_lwt.Fill.html#VALrandom">random</a> [<a href="Mirage_block_lwt.Fill.html">Mirage_block_lwt.Fill</a>]</td>
 <td><div class="info">
 Fill a block device with pseudorandom data
 </div>
 </td></tr>
-<tr><td><a href="Ramdisk.html#VALresize">resize</a> [<a href="Ramdisk.html">Ramdisk</a>]</td>
+<tr><td><a href="Mirage_block.S.html#VALread">read</a> [<a href="Mirage_block.S.html">Mirage_block.S</a>]</td>
 <td><div class="info">
-<code class="code">resize t new_size_sectors</code> attempts to resize the connected device
-    to have the given number of sectors.
+<code class="code">read&nbsp;device&nbsp;sector_start&nbsp;buffers</code> reads data starting at
+      <code class="code">sector_start</code> from the block device into <code class="code">buffers</code>.
 </div>
 </td></tr>
-<tr><td><a href="Mirage_block_s.RESIZABLE.html#VALresize">resize</a> [<a href="Mirage_block_s.RESIZABLE.html">Mirage_block_s.RESIZABLE</a>]</td>
+<tr><td><a href="Mirage_block_lwt.RESIZABLE.html#VALresize">resize</a> [<a href="Mirage_block_lwt.RESIZABLE.html">Mirage_block_lwt.RESIZABLE</a>]</td>
 <td><div class="info">
-<code class="code">resize t new_size_sectors</code> attempts to resize the connected device
-	    to have the given number of sectors.
+<code class="code">resize&nbsp;t&nbsp;new_size_sectors</code> attempts to resize the connected device
+      to have the given number of sectors.
 </div>
 </td></tr>
-<tr><td><a href="Mirage_block_monad.html#VALreturn">return</a> [<a href="Mirage_block_monad.html">Mirage_block_monad</a>]</td>
-<td></td></tr>
 <tr><td align="left"><br>S</td></tr>
-<tr><td><a href="Mirage_block_copy.Make_seekable.html#VALseek_mapped">seek_mapped</a> [<a href="Mirage_block_copy.Make_seekable.html">Mirage_block_copy.Make_seekable</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block_s.SEEKABLE.html#VALseek_mapped">seek_mapped</a> [<a href="Mirage_block_s.SEEKABLE.html">Mirage_block_s.SEEKABLE</a>]</td>
+<tr><td><a href="Mirage_block_lwt.Fold.html#VALs">s</a> [<a href="Mirage_block_lwt.Fold.html">Mirage_block_lwt.Fold</a>]</td>
 <td><div class="info">
-<code class="code">seek_mapped t start</code> returns the offset of the next regoin of the
-			device which may have data in it (typically this is the next mapped
-			region)
+Folds <code class="code">f</code> across blocks read sequentially from a block device
 </div>
 </td></tr>
-<tr><td><a href="Mirage_block_copy.Make_seekable.html#VALseek_unmapped">seek_unmapped</a> [<a href="Mirage_block_copy.Make_seekable.html">Mirage_block_copy.Make_seekable</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block_s.SEEKABLE.html#VALseek_unmapped">seek_unmapped</a> [<a href="Mirage_block_s.SEEKABLE.html">Mirage_block_s.SEEKABLE</a>]</td>
+<tr><td><a href="Mirage_block_lwt.SEEKABLE.html#VALseek_mapped">seek_mapped</a> [<a href="Mirage_block_lwt.SEEKABLE.html">Mirage_block_lwt.SEEKABLE</a>]</td>
 <td><div class="info">
-<code class="code">seek_unmapped t start</code> returns the offset of the next guaranteed
-	    zero-filled region (typically guaranteed because it is unmapped)
+<code class="code">seek_mapped&nbsp;t&nbsp;start</code> returns the sector offset of the next
+      regoin of the device which may have data in it (typically this
+      is the next mapped region)
 </div>
 </td></tr>
-<tr><td><a href="Mirage_block_copy.html#VALsparse_copy">sparse_copy</a> [<a href="Mirage_block_copy.html">Mirage_block_copy</a>]</td>
-<td></td></tr>
-<tr><td><a href="Mirage_block.html#VALsparse_copy">sparse_copy</a> [<a href="Mirage_block.html">Mirage_block</a>]</td>
+<tr><td><a href="Mirage_block_lwt.SEEKABLE.html#VALseek_unmapped">seek_unmapped</a> [<a href="Mirage_block_lwt.SEEKABLE.html">Mirage_block_lwt.SEEKABLE</a>]</td>
 <td><div class="info">
-Copy all mapped data from a source SEEKABLE device to a destination BLOCK device.
+<code class="code">seek_unmapped&nbsp;t&nbsp;start</code> returns the sector offset of the next
+      guaranteed zero-filled region (typically guaranteed because it
+      is unmapped)
+</div>
+</td></tr>
+<tr><td align="left"><br>U</td></tr>
+<tr><td><a href="Mirage_block_lwt.Fast_fold.html#VALunmapped_s">unmapped_s</a> [<a href="Mirage_block_lwt.Fast_fold.html">Mirage_block_lwt.Fast_fold</a>]</td>
+<td><div class="info">
+Folds <code class="code">f&nbsp;acc&nbsp;ofs&nbsp;len</code> across offsets of unmapped data blocks
+      read sequentially from the block device.
+</div>
+</td></tr>
+<tr><td><a href="Mirage_block_lwt.Make_safe.html#VALunsafe_read">unsafe_read</a> [<a href="Mirage_block_lwt.Make_safe.html">Mirage_block_lwt.Make_safe</a>]</td>
+<td><div class="info">
+<code class="code">unsafe_read</code> is like <code class="code">read</code> except it bypasses the necessary
+      buffer precondition checks.
+</div>
+</td></tr>
+<tr><td><a href="Mirage_block_lwt.Make_safe.html#VALunsafe_write">unsafe_write</a> [<a href="Mirage_block_lwt.Make_safe.html">Mirage_block_lwt.Make_safe</a>]</td>
+<td><div class="info">
+<code class="code">unsafe_write</code> is like <code class="code">write</code> except it bypasses the necessary
+      buffer precondition checks.
+</div>
+</td></tr>
+<tr><td align="left"><br>V</td></tr>
+<tr><td><a href="Mirage_block_lwt.Sparse_copy.html#VALv">v</a> [<a href="Mirage_block_lwt.Sparse_copy.html">Mirage_block_lwt.Sparse_copy</a>]</td>
+<td><div class="info">
+Copy all mapped data from a source SEEKABLE device to a
+      destination BLOCK device.
+</div>
+</td></tr>
+<tr><td><a href="Mirage_block_lwt.Copy.html#VALv">v</a> [<a href="Mirage_block_lwt.Copy.html">Mirage_block_lwt.Copy</a>]</td>
+<td><div class="info">
+Copy all data from a source BLOCK device to a destination BLOCK
+      device.
+</div>
+</td></tr>
+<tr><td><a href="Mirage_block_lwt.Compare.html#VALv">v</a> [<a href="Mirage_block_lwt.Compare.html">Mirage_block_lwt.Compare</a>]</td>
+<td><div class="info">
+Compare the contents of two block devices.
+</div>
+</td></tr>
+<tr><td align="left"><br>W</td></tr>
+<tr><td><a href="Mirage_block.S.html#VALwrite">write</a> [<a href="Mirage_block.S.html">Mirage_block.S</a>]</td>
+<td><div class="info">
+<code class="code">write&nbsp;device&nbsp;sector_start&nbsp;buffers</code> writes data from <code class="code">buffers</code>
+      onto the block device starting at <code class="code">sector_start</code>.
 </div>
 </td></tr>
 </table>
