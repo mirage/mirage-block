@@ -190,3 +190,9 @@ module Make_safe (B: S): sig
       respected. *)
 
 end
+
+(** In-memory implementation of the block-device signature. *)
+module Mem: sig
+  include S
+  val connect : string -> t Lwt.t
+end
