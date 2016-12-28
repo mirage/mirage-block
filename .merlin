@@ -1,4 +1,4 @@
-PKG mirage-device lwt.unix alcotest mirage-block-ramdisk cstruct io-page
+PKG mirage-device lwt.unix alcotest cstruct io-page
 PKG logs
 S src/
 S lwt/
