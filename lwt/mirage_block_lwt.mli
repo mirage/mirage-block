@@ -190,3 +190,12 @@ module Make_safe (B: S): sig
       respected. *)
 
 end
+
+(** Very simple in-memory implementation of the block-device
+    signature, using blocks of constant size (16M). Use
+    {{:https://github.com/mirage/mirage-block-ramdisk}ramdisk} for a
+    more serious implementation. *)
+module Mem: sig
+  include S
+  val connect : string -> t Lwt.t
+end

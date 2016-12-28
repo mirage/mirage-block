@@ -23,3 +23,4 @@ module Copy = Mirage_block_copy.Copy
 module Sparse_copy = Mirage_block_copy.Sparse_copy
 module Fill = Mirage_block_patterns.Fill
 module Make_safe = Mirage_block_safe.Make
+module Mem = Mirage_block_mem
