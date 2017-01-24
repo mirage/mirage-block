@@ -29,5 +29,5 @@ end
 
 module type RESIZABLE = sig
   include S
-  val resize : t -> int64 -> (unit, error) result io
+  val resize : t -> int64 -> (unit, write_error) result io
 end

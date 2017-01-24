@@ -40,7 +40,7 @@ end
 module type RESIZABLE = sig
   include S
 
-  val resize : t -> int64 -> (unit, error) result io
+  val resize : t -> int64 -> (unit, write_error) result io
   (** [resize t new_size_sectors] attempts to resize the connected device
       to have the given number of sectors. If successful, subsequent calls
       to [get_info] will reflect the new size. *)
