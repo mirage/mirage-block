@@ -1,7 +1,17 @@
-all:
-	ocaml pkg/pkg.ml build -n mirage-block -q
-	ocaml pkg/pkg.ml build -n mirage-block-lwt -q
+
+.PHONY: build clean test
+
+build:
+	jbuilder build @install
+
+test:
+	jbuilder runtest
+
+install:
+	jbuilder install
+
+uninstall:
+	jbuilder uninstall
 
 clean:
-	ocaml pkg/pkg.ml clean -n mirage-block
-	ocaml pkg/pkg.ml clean -n mirage-block-lwt
+	rm -rf _build
