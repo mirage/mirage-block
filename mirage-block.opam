@@ -9,12 +9,13 @@ doc: "https://mirage.github.io/mirage-block/"
 
 
 build: [
+  [ "jbuilder" "subst"] {pinned}
   [ "jbuilder" "build" "-p" name "-j" jobs ]
 ]
 
 depends: [
   "ocamlfind" {build}
-  "jbuilder"  {build & >="1.0+beta7"}
+  "jbuilder"  {build & >="1.0+beta9"}
   "mirage-device" {>= "1.0.0"}
 ]
 
