@@ -7,12 +7,15 @@ dev-repo: "https://github.com/mirage/mirage-block.git"
 bug-reports: "https://github.com/mirage/mirage-block/issues"
 doc: "https://mirage.github.io/mirage-block/"
 
-build: ["ocaml" "pkg/pkg.ml" "build" "-n" name "--pinned" "%{pinned}%"]
+
+build: [
+  [ "jbuilder" "subst"] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
+]
 
 depends: [
-  "ocamlbuild" {build}
   "ocamlfind" {build}
-  "topkg" {build}
+  "jbuilder"  {build & >="1.0+beta9"}
   "mirage-device" {>= "1.0.0"}
 ]
 
