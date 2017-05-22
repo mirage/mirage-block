@@ -1,3 +1,9 @@
+## 1.1.0 (2017-05-22)
+
+- `resize` should be able to return `write_error`
+- update `appveyor.yml`
+- build with `jbuilder`
+
 ## 1.0.0 (2016-12-21)
 
 - Import `V1.BLOCK` from `mirage-types` into `Mirage_block.S` (@samoht)
