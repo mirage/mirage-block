@@ -14,10 +14,9 @@ build: [
 ]
 
 depends: [
-  "ocamlfind" {build}
   "jbuilder"  {build & >="1.0+beta9"}
   "mirage-device" {>= "1.0.0"}
 ]
 
-available: [ocaml-version >= "4.02.0"]
+available: [ocaml-version >= "4.04.2"]
 tags: "org:mirage"
