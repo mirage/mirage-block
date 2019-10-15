@@ -43,9 +43,6 @@ type info = {
     persistent storage. *)
 module type S = sig
 
-  type page_aligned_buffer
-  (** The type for page-aligned memory buffers. *)
-
   type error = private [> Mirage_device.error]
   (** The type for block errors. *)
 
@@ -60,10 +57,10 @@ module type S = sig
 
   include Mirage_device.S
 
-  val get_info: t -> info io
+  val get_info: t -> info Lwt.t
   (** Query the characteristics of a specific block device *)
 
-  val read: t -> int64 -> page_aligned_buffer list -> (unit, error) result io
+  val read: t -> int64 -> Cstruct.t list -> (unit, error) result Lwt.t
   (** [read device sector_start buffers] reads data starting at
       [sector_start] from the block device into [buffers]. [Ok ()]
       means the buffers have been filled.  [Error _] indicates an I/O
@@ -71,8 +68,8 @@ module type S = sig
       Each of elements in the list [buffers] must be a whole number of
       sectors in length.  The list of buffers can be of any length. *)
 
-  val write: t -> int64 -> page_aligned_buffer list ->
-    (unit, write_error) result io
+  val write: t -> int64 -> Cstruct.t list ->
+    (unit, write_error) result Lwt.t
   (** [write device sector_start buffers] writes data from [buffers]
       onto the block device starting at [sector_start]. [Ok ()] means
       the contents of the buffers have been written. [Error _]

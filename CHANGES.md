@@ -1,3 +1,8 @@
+## v2.0.0
+
+- remove mirage-block-lwt, specialise mirage-block to Lwt.t and Cstruct.t
+- move combinators to mirage-block-combinators
+
 ## v1.2.0 (2019-02-03)
 - port to dune from jbuilder (@avsm)
 - upgrade opam metadata to 2.0 (@avsm)

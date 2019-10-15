@@ -7,10 +7,12 @@ homepage: "https://github.com/mirage/mirage-block"
 doc: "https://mirage.github.io/mirage-block/"
 bug-reports: "https://github.com/mirage/mirage-block/issues"
 depends: [
-  "ocaml" {>= "4.04.2"}
+  "ocaml" {>= "4.06.0"}
   "dune" {>= "1.0"}
-  "mirage-device" {>= "1.0.0"}
+  "mirage-device" {>= "2.0.0"}
+  "lwt" {>= "4.4.0"}
 ]
+conflicts: [ "mirage-block-lwt" ]
 build: [
   ["dune" "subst"] {pinned}
   ["dune" "build" "-p" name "-j" jobs]

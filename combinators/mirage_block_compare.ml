@@ -16,10 +16,9 @@
  *)
 
 open Lwt.Infix
-open Mirage_block_lwt_s
 module B = Mirage_block
 
-module Compare (From: S) (Dest: S) = struct
+module Compare (From: B.S) (Dest: B.S) = struct
 
   type error = [`A of From.error | `B of Dest.error ]
 

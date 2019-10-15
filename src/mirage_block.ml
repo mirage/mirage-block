@@ -32,14 +32,13 @@ type info = {
 }
 
 module type S = sig
-  type page_aligned_buffer
   type error = private [> Mirage_device.error]
   val pp_error: error Fmt.t
   type write_error = private [> Mirage_device.error | `Is_read_only]
   val pp_write_error: write_error Fmt.t
   include Mirage_device.S
-  val get_info: t -> info io
-  val read: t -> int64 -> page_aligned_buffer list -> (unit, error) result io
-  val write: t -> int64 -> page_aligned_buffer list ->
-    (unit, write_error) result io
+  val get_info: t -> info Lwt.t
+  val read: t -> int64 -> Cstruct.t list -> (unit, error) result Lwt.t
+  val write: t -> int64 -> Cstruct.t list ->
+    (unit, write_error) result Lwt.t
 end
