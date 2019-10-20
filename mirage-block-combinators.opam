@@ -13,7 +13,7 @@ depends: [
   "io-page"
   "lwt" {>= "4.4.0"}
   "logs"
-  "mirage-block" {>= "2.0.0"}
+  "mirage-block" {=version}
 ]
 build: [
   ["dune" "subst"] {pinned}
