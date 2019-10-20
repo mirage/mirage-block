@@ -11,6 +11,7 @@ depends: [
   "dune" {>= "1.0"}
   "mirage-device" {>= "2.0.0"}
   "lwt" {>= "4.4.0"}
+  "cstruct" {>= "4.0.0"}
 ]
 conflicts: [ "mirage-block-lwt" ]
 build: [
