@@ -15,7 +15,7 @@
  *
  *)
 
-include Mirage_block_lwt_s
+include Mirage_block_combinators_s
 module Fold = Mirage_block_iter.Fold
 module Fast_fold = Mirage_block_iter.Fast_fold
 module Compare = Mirage_block_compare.Compare

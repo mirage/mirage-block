@@ -15,12 +15,12 @@
  *
  *)
 open Lwt.Infix
-open Mirage_block_lwt_s
+open Mirage_block_combinators_s
 module B = Mirage_block
 
 let (>>*=) x f = x >>= function | Ok q -> f q | Error e -> Lwt.return @@ Error e
 
-module Fold (Block: S) = struct
+module Fold (Block: B.S) = struct
 
   let s ~f init (b: Block.t) =
     Block.get_info b

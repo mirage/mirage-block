@@ -16,14 +16,11 @@
  *)
 
 open Lwt.Infix
-open Mirage_block_lwt_s
 open Mirage_block_log
 
-module Make (B: S) = struct
+module Make (B: Mirage_block.S) = struct
 
   type t = B.t
-  type 'a io = 'a B.io
-  type page_aligned_buffer = B.page_aligned_buffer
 
   type error = [
     | Mirage_block.error

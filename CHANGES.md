@@ -1,3 +1,9 @@
+## v2.0.0 (2019-10-22)
+
+- remove mirage-block-lwt, specialise mirage-block to Lwt.t and Cstruct.t (#46 @hannesm)
+- move combinators to mirage-block-combinators (#46 @hannesm)
+- raise lower OCaml bound to 4.06.0 (#46 @hannesm)
+
 ## v1.2.0 (2019-02-03)
 - port to dune from jbuilder (@avsm)
 - upgrade opam metadata to 2.0 (@avsm)

@@ -16,9 +16,10 @@
  *)
 
 open Lwt.Infix
-open Mirage_block_lwt_s
+open Mirage_block_combinators_s
+module B = Mirage_block
 
-module Make_seekable(B: S) = struct
+module Make_seekable(B: B.S) = struct
   include B
 
   let seek_mapped _ sector = Lwt.return (Ok sector)
@@ -28,7 +29,7 @@ module Make_seekable(B: S) = struct
     Lwt.return (Ok info.Mirage_block.size_sectors)
 end
 
-module Sparse_copy (From: SEEKABLE) (Dest: S) = struct
+module Sparse_copy (From: SEEKABLE) (Dest: B.S) = struct
 
   module B = Mirage_block
 
@@ -139,7 +140,7 @@ module Sparse_copy (From: SEEKABLE) (Dest: S) = struct
 
 end
 
-module Copy (From: S) (Dest: S) = struct
+module Copy (From: B.S) (Dest: B.S) = struct
   module From_seekable = Make_seekable(From)
   module Sparse_copy = Sparse_copy (From_seekable)(Dest)
   type error = Sparse_copy.error

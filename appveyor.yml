@@ -6,10 +6,11 @@ environment:
     FORK_USER: ocaml
     FORK_BRANCH: master
     CYG_ROOT: C:\cygwin64
-    PACKAGE: mirage-block-lwt
+    PINS: "mirage-block.2.0.0:. mirage-block-combinators.2.0.0:. mirage-device.2.0.0:git+https://github.com/mirage/mirage-device.git#v2.0.0"
+    PACKAGE: "mirage-block-combinators"
   matrix:
-    - OPAM_SWITCH: 4.05.0+msvc32c
-    - OPAM_SWITCH: 4.04.2+mingw64c
+    - OPAM_SWITCH: 4.06.0+msvc32c
+    - OPAM_SWITCH: 4.06.0+mingw64c
 
 install:
   - ps: iex ((new-object net.webclient).DownloadString("https://raw.githubusercontent.com/$env:FORK_USER/ocaml-ci-scripts/$env:FORK_BRANCH/appveyor-install.ps1"))

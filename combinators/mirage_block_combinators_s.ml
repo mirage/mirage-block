@@ -15,17 +15,13 @@
  *
  *)
 
-module type S = Mirage_block.S
-  with type 'a io = 'a Lwt.t
-   and type page_aligned_buffer = Cstruct.t
-
 module type SEEKABLE = sig
-  include S
-  val seek_unmapped: t -> int64 -> (int64, error) result io
-  val seek_mapped: t -> int64 -> (int64, error) result io
+  include Mirage_block.S
+  val seek_unmapped: t -> int64 -> (int64, error) result Lwt.t
+  val seek_mapped: t -> int64 -> (int64, error) result Lwt.t
 end
 
 module type RESIZABLE = sig
-  include S
-  val resize : t -> int64 -> (unit, write_error) result io
+  include Mirage_block.S
+  val resize : t -> int64 -> (unit, write_error) result Lwt.t
 end

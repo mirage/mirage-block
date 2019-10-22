@@ -15,10 +15,9 @@
  *
  *)
 open Lwt.Infix
-open Mirage_block_lwt_s
 module B = Mirage_block
 
-module Fill (Block: S) = struct
+module Fill (Block: B.S) = struct
   let random (b: Block.t) =
     Block.get_info b
     >>= fun info ->

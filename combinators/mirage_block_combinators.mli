@@ -17,28 +17,24 @@
 
 (** Block device implementatins using lwt *)
 
-module type S = Mirage_block.S
-  with type 'a io = 'a Lwt.t
-   and type page_aligned_buffer = Cstruct.t
-
 module type SEEKABLE = sig
-  include S
+  include Mirage_block.S
 
-  val seek_unmapped: t -> int64 -> (int64, error) result io
+  val seek_unmapped: t -> int64 -> (int64, error) result Lwt.t
   (** [seek_unmapped t start] returns the sector offset of the next
       guaranteed zero-filled region (typically guaranteed because it
       is unmapped) *)
 
-  val seek_mapped: t -> int64 -> (int64, error) result io
+  val seek_mapped: t -> int64 -> (int64, error) result Lwt.t
   (** [seek_mapped t start] returns the sector offset of the next
       regoin of the device which may have data in it (typically this
       is the next mapped region) *)
 end
 
 module type RESIZABLE = sig
-  include S
+  include Mirage_block.S
 
-  val resize : t -> int64 -> (unit, write_error) result io
+  val resize : t -> int64 -> (unit, write_error) result Lwt.t
   (** [resize t new_size_sectors] attempts to resize the connected device
       to have the given number of sectors. If successful, subsequent calls
       to [get_info] will reflect the new size. *)
@@ -47,7 +43,7 @@ end
 (** Utility functions over Mirage [BLOCK] devices *)
 
 (** {1 Compare blocks} *)
-module Compare (A: S) (B: S): sig
+module Compare (A: Mirage_block.S) (B: Mirage_block.S): sig
 
   type error = [`A of A.error | `B of B.error]
   (** The type for compare errors. *)
@@ -61,7 +57,7 @@ module Compare (A: S) (B: S): sig
 end
 
 (** {1 Fold over the bytes of a block device} *)
-module Fold (A: S): sig
+module Fold (A: Mirage_block.S): sig
 
   val s:
     f:('a -> int64 -> Cstruct.t -> 'a Lwt.t) -> 'a -> A.t ->
@@ -98,7 +94,7 @@ module Fast_fold (A: SEEKABLE): sig
 end
 
 (** {1 Copy bytes between blocks} *)
-module Copy (A: S) (B: S): sig
+module Copy (A: Mirage_block.S) (B: Mirage_block.S): sig
 
   type error = private [> `Is_read_only | `Different_sizes]
   (** The type for copy errors. *)
@@ -122,7 +118,7 @@ end
 
     This functor use seeks operation to perform fast sparse copy
     between blocks. *)
-module Sparse_copy (A: SEEKABLE) (B: S): sig
+module Sparse_copy (A: SEEKABLE) (B: Mirage_block.S): sig
 
   type error = private [> `Is_read_only | `Different_sizes]
   (** The type for copy errors. *)
@@ -147,7 +143,7 @@ module Sparse_copy (A: SEEKABLE) (B: S): sig
 end
 
 (** {1 Fill blocks} *)
-module Fill (A: S): sig
+module Fill (A: Mirage_block.S): sig
 
   val random: A.t -> (unit, A.write_error) result Lwt.t
   (** Fill a block device with pseudorandom data *)
@@ -161,7 +157,7 @@ end
     messages generated. Some concrete implementations generate
     confusing errors (e.g. Unix might say "EINVAL") which are harder
     to debug. *)
-module Make_safe (B: S): sig
+module Make_safe (B: Mirage_block.S): sig
 
   type error = private [> Mirage_block.error | `Unsafe of string]
   (** The type for errors. *)
@@ -169,18 +165,18 @@ module Make_safe (B: S): sig
   type write_error = private [> Mirage_block.write_error | `Unsafe of string]
   (** The type for write errors. *)
 
-  include S with type t = B.t
+  include Mirage_block.S with type t = B.t
              and type error := error
              and type write_error := write_error
 
-  val unsafe_read: t -> int64 -> page_aligned_buffer list ->
+  val unsafe_read: t -> int64 -> Cstruct.t list ->
     (unit, B.error) result Lwt.t
   (** [unsafe_read] is like [read] except it bypasses the necessary
       buffer precondition checks. Only use this if you want maximum
       performance and if you can prove the preconditions are
       respected. *)
 
-  val unsafe_write: t -> int64 -> page_aligned_buffer list ->
+  val unsafe_write: t -> int64 -> Cstruct.t list ->
     (unit, B.write_error) result Lwt.t
   (** [unsafe_write] is like [write] except it bypasses the necessary
       buffer precondition checks. Only use this if you want maximum
@@ -194,6 +190,6 @@ end
     {{:https://github.com/mirage/mirage-block-ramdisk}ramdisk} for a
     more serious implementation. *)
 module Mem: sig
-  include S
+  include Mirage_block.S
   val connect : string -> t Lwt.t
 end
