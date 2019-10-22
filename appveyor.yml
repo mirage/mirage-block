@@ -6,7 +6,7 @@ environment:
     FORK_USER: ocaml
     FORK_BRANCH: master
     CYG_ROOT: C:\cygwin64
-    PINS: "mirage-block.2.0.0:. mirage-block-combinators.2.0.0:."
+    PINS: "mirage-block.2.0.0:. mirage-block-combinators.2.0.0:. mirage-device.2.0.0:git+https://github.com/mirage/mirage-device.git#v2.0.0"
     PACKAGE: "mirage-block-combinators"
   matrix:
     - OPAM_SWITCH: 4.06.0+msvc32c
