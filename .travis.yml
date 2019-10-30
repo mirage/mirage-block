@@ -5,14 +5,11 @@ services:
 - docker
 env:
   global:
-  - PINS="mirage-block-combinators.2.0.0:. mirage-block.2.0.0:."
+  - PINS="mirage-block-combinators:. mirage-block:."
   - DISTRO="debian-stable"
+  - REVDEPS=true
   matrix:
   - PACKAGE="mirage-block-combinators" OCAML_VERSION="4.06"
-  - PACKAGE="mirage-block-combinators" OCAML_VERSION="4.07"
-  - PACKAGE="mirage-block-combinators" OCAML_VERSION="4.08"
-  - PACKAGE="mirage-block-combinators" OCAML_VERSION="4.09"
-  - PACKAGE="mirage-block" OCAML_VERSION="4.06"
   - PACKAGE="mirage-block" OCAML_VERSION="4.07"
-  - PACKAGE="mirage-block" OCAML_VERSION="4.08"
+  - PACKAGE="mirage-block-combinators" OCAML_VERSION="4.08"
   - PACKAGE="mirage-block" OCAML_VERSION="4.09"
