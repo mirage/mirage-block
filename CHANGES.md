@@ -1,3 +1,7 @@
+## v2.0.1 (2019-11-04)
+
+* provide deprecated Mirage_block_lwt for smooth transition (#48 @hannesm)
+
 ## v2.0.0 (2019-10-22)
 
 - remove mirage-block-lwt, specialise mirage-block to Lwt.t and Cstruct.t (#46 @hannesm)
