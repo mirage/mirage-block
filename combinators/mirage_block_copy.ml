@@ -76,8 +76,8 @@ module Sparse_copy (From: SEEKABLE) (Dest: B.S) = struct
       let thread () =
         (* A page-aligned 64KiB buffer *)
         let buffer = Io_page.(to_cstruct (get 8)) in
-        let from_sectors = Cstruct.len buffer / from_info.B.sector_size in
-        let dest_sectors = Cstruct.len buffer / dest_info.B.sector_size in
+        let from_sectors = Cstruct.length buffer / from_info.B.sector_size in
+        let dest_sectors = Cstruct.length buffer / dest_info.B.sector_size in
         let rec loop () =
           (* Grab a region of the disk to copy *)
           Lwt_mutex.with_lock m (fun () ->

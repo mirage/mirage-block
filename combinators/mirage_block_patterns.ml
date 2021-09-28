@@ -22,7 +22,7 @@ module Fill (Block: B.S) = struct
     Block.get_info b
     >>= fun info ->
     let buffer = Io_page.(to_cstruct (get 8)) in
-    let sectors = Cstruct.len buffer / info.B.sector_size in
+    let sectors = Cstruct.length buffer / info.B.sector_size in
 
     let rec loop next =
       if next >= info.B.size_sectors
@@ -31,7 +31,7 @@ module Fill (Block: B.S) = struct
         let remaining = Int64.sub info.B.size_sectors next in
         let this_time = min sectors (Int64.to_int remaining) in
         let buf = Cstruct.sub buffer 0 (info.B.sector_size * this_time) in
-        for i = 0 to Cstruct.len buf - 1 do
+        for i = 0 to Cstruct.length buf - 1 do
           Cstruct.set_uint8 buf i (Random.int 256)
         done;
         Block.write b next [ buf ]

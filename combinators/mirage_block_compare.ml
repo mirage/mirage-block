@@ -47,7 +47,7 @@ module Compare (From: B.S) (Dest: B.S) = struct
 
       let from_buffer = Io_page.(to_cstruct (get 8)) in
       let dest_buffer = Io_page.(to_cstruct (get 8)) in
-      let sectors = Cstruct.len from_buffer / from_info.B.sector_size in
+      let sectors = Cstruct.length from_buffer / from_info.B.sector_size in
 
       let rec loop next =
         if next >= from_info.B.size_sectors
