@@ -16,24 +16,17 @@
 
 open Mirage_block
 
-type 'a io = 'a Lwt.t
-
-type id = string
-
-(* NB not actually page-aligned *)
-type page_aligned_buffer = Cstruct.t
-
 module Int64Map = Map.Make(Int64)
 
 type t = {
-  mutable map: page_aligned_buffer Int64Map.t;
+  mutable map: Cstruct.t Int64Map.t;
   info: info;
-  id: id;
+  id: string;
 }
 
 type error = Mirage_block.error
-type write_error = Mirage_block.write_error
 let pp_error = Mirage_block.pp_error
+type write_error = Mirage_block.write_error
 let pp_write_error = Mirage_block.pp_write_error
 let devices = Hashtbl.create 1
 let get_info { info; _ } = Lwt.return info

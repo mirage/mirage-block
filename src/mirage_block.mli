@@ -17,7 +17,7 @@
 
 (** Block device signatures. *)
 
-type error = Mirage_device.error
+type error = [ `Disconnected ]
 (** The type for IO operation errors. *)
 
 val pp_error: error Fmt.t
@@ -43,19 +43,24 @@ type info = {
     persistent storage. *)
 module type S = sig
 
-  type error = private [> Mirage_device.error]
+  type nonrec error = private [> error ]
   (** The type for block errors. *)
 
   val pp_error: error Fmt.t
   (** [pp_error] is the pretty-printer for errors. *)
 
-  type write_error = private [> Mirage_device.error | `Is_read_only]
+  type nonrec write_error = private [> write_error ]
   (** The type for write errors. *)
 
   val pp_write_error: write_error Fmt.t
   (** [pp_write_error] is the pretty-printer for write errors. *)
 
-  include Mirage_device.S
+  type t
+  (** The type representing the internal state of the block device *)
+
+  val disconnect: t -> unit Lwt.t
+  (** Disconnect from the device. While this might take some time to
+      complete, it can never result in an error. *)
 
   val get_info: t -> info Lwt.t
   (** Query the characteristics of a specific block device *)
@@ -79,18 +84,8 @@ module type S = sig
       Once submitted, it is not possible to cancel a request and there
       is no timeout.
 
-      The operation may fail with:
-
-      {ul
-
-      {- [`Unimplemented]: the operation has not been implemented, no
-      data has been written.}
-      {- [`Is_read_only]: the device is read-only, no data has been
-      written.}
-      {- [`Disconnected]: the device has been disconnected at
-        application request, an unknown amount of data has been
-        written.}
-      }
+      The operation may fail with: [`Is_read_only]: the device is read-only, no
+      data has been written.
 
       Each of [buffers] must be a whole number of sectors in
       length. The list of buffers can be of any length.

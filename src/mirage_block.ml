@@ -15,14 +15,15 @@
  *
  *)
 
-type error = Mirage_device.error
+type error = [ `Disconnected ]
 
-type write_error = [error | `Is_read_only]
+let pp_error ppf = function
+  | `Disconnected -> Fmt.string ppf "Device is disconnected"
 
-let pp_error = Mirage_device.pp_error
+type write_error = [ error | `Is_read_only ]
 
 let pp_write_error ppf = function
-  | #Mirage_device.error as e -> Mirage_device.pp_error ppf e
+  | #error as e -> pp_error ppf e
   | `Is_read_only -> Fmt.pf ppf "attempted to write to a read-only disk"
 
 type info = {
@@ -32,11 +33,12 @@ type info = {
 }
 
 module type S = sig
-  type error = private [> Mirage_device.error]
+  type nonrec error = private [> error ]
   val pp_error: error Fmt.t
-  type write_error = private [> Mirage_device.error | `Is_read_only]
+  type nonrec write_error = private [> write_error ]
   val pp_write_error: write_error Fmt.t
-  include Mirage_device.S
+  type t
+  val disconnect : t -> unit Lwt.t
   val get_info: t -> info Lwt.t
   val read: t -> int64 -> Cstruct.t list -> (unit, error) result Lwt.t
   val write: t -> int64 -> Cstruct.t list ->
