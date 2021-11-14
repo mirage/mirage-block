@@ -26,7 +26,7 @@ module Fold (Block: B.S) = struct
     Block.get_info b
     >>= fun info ->
     let buffer = Io_page.(to_cstruct (get 8)) in
-    let sectors = Cstruct.len buffer / info.B.sector_size in
+    let sectors = Cstruct.length buffer / info.B.sector_size in
 
     let rec loop acc next =
       if next >= info.B.size_sectors
@@ -51,7 +51,7 @@ module Fast_fold (Seekable: SEEKABLE) = struct
     Seekable.get_info s
     >>= fun info ->
     let buffer = Io_page.(to_cstruct (get 8)) in
-    let sectors = Cstruct.len buffer / info.B.sector_size in
+    let sectors = Cstruct.length buffer / info.B.sector_size in
 
     let rec loop acc next =
       (* next points to the next mapped chunk (or end of device) *)

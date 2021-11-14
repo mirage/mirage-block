@@ -68,7 +68,7 @@ module Make (B: Mirage_block.S) = struct
 
   let check_buffer op sector_size b =
     (* Check buffers are whole numbers of sectors *)
-    ( let len = Cstruct.len b in
+    ( let len = Cstruct.length b in
       if len mod sector_size <> 0
       then fatalf "%s: buffer length (%d) is not a multiple of \
                    sector_size (%d)" op len sector_size
@@ -95,7 +95,7 @@ module Make (B: Mirage_block.S) = struct
     >>*= fun () ->
     check_in_range op size_sectors offset
     >>*= fun () ->
-    let length = List.fold_left (fun acc b -> Cstruct.len b + acc) 0 buffers in
+    let length = List.fold_left (fun acc b -> Cstruct.length b + acc) 0 buffers in
     let next_sector = Int64.(add offset (of_int @@ length / sector_size)) in
     if next_sector > size_sectors
     then fatalf "%s: sector offset out of range %Ld > %Ld"
