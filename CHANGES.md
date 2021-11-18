@@ -1,3 +1,8 @@
+## v3.0.0
+
+* Remove Mirage_block_lwt module
+* Remove dependency of mirage-device
+
 ## v2.0.1 (2019-11-04)
 
 * provide deprecated Mirage_block_lwt for smooth transition (#48 @hannesm)
