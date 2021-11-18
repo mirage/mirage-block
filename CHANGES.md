@@ -1,7 +1,7 @@
-## v3.0.0
+## v3.0.0 (2021-11-18)
 
-* Remove Mirage_block_lwt module
-* Remove dependency of mirage-device
+* Remove Mirage_block_lwt module (#50 @hannesm)
+* Remove dependency of mirage-device (#50 @hannesm)
 
 ## v2.0.1 (2019-11-04)
 
