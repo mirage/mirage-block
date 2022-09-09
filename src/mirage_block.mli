@@ -39,6 +39,8 @@ type info = {
 (** The type for characteristics of the block device. Note some
     devices may be able to make themselves bigger over time. *)
 
+val pp_info : Format.formatter -> info -> unit
+
 (** Operations on sector-addressible block devices, usually used for
     persistent storage. *)
 module type S = sig

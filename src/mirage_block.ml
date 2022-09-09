@@ -32,6 +32,15 @@ type info = {
   size_sectors: int64; (** Total sectors per device *)
 }
 
+let pp_info ppf { read_write; sector_size; size_sectors } =
+  Format.fprintf ppf
+    "@[<2>{ \
+     @[Mirage_block.read_write =@ %B@];@ \
+     @[sector_size =@ %d@];@ \
+     @[size_sectors =@ %LdL@]@ \
+     }@]"
+    read_write sector_size size_sectors
+
 module type S = sig
   type nonrec error = private [> error ]
   val pp_error: error Fmt.t
