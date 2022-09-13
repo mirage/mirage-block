@@ -40,6 +40,7 @@ type info = {
     devices may be able to make themselves bigger over time. *)
 
 val pp_info : Format.formatter -> info -> unit
+(** [pp_info] is the pretty-printer for {info}. *)
 
 (** Operations on sector-addressible block devices, usually used for
     persistent storage. *)
