@@ -1,3 +1,9 @@
+## v3.0.1 (2022-09-15)
+
+* Add Mirage_block.pp_info (#51 @reynir)
+* Use GitHub actions for testing on windows and macos (retire AppVeyor)
+* Remove io-page dependency (#52 @hannesm)
+
 ## v3.0.0 (2021-11-18)
 
 * Remove Mirage_block_lwt module (#50 @hannesm)
