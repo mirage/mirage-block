@@ -1,5 +1,5 @@
 (library
  (name mirage_block_combinators)
  (public_name mirage-block-combinators)
- (libraries mirage-block lwt cstruct io-page logs)
+ (libraries mirage-block lwt cstruct logs)
  (wrapped false))

@@ -74,8 +74,7 @@ module Sparse_copy (From: SEEKABLE) (Dest: B.S) = struct
           ) in
 
       let thread () =
-        (* A page-aligned 64KiB buffer *)
-        let buffer = Io_page.(to_cstruct (get 8)) in
+        let buffer = Cstruct.create (4096 * 8) in
         let from_sectors = Cstruct.length buffer / from_info.B.sector_size in
         let dest_sectors = Cstruct.length buffer / dest_info.B.sector_size in
         let rec loop () =

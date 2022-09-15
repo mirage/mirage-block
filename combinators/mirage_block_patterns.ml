@@ -21,7 +21,7 @@ module Fill (Block: B.S) = struct
   let random (b: Block.t) =
     Block.get_info b
     >>= fun info ->
-    let buffer = Io_page.(to_cstruct (get 8)) in
+    let buffer = Cstruct.create (4096 * 8) in
     let sectors = Cstruct.length buffer / info.B.sector_size in
 
     let rec loop next =
