@@ -45,8 +45,8 @@ module Compare (From: B.S) (Dest: B.S) = struct
     | ((-1) | 1) as x -> Lwt.return (Ok x)
     | _ ->
 
-      let from_buffer = Io_page.(to_cstruct (get 8)) in
-      let dest_buffer = Io_page.(to_cstruct (get 8)) in
+      let from_buffer = Cstruct.create (4096 * 8) in
+      let dest_buffer = Cstruct.create (4096 * 8) in
       let sectors = Cstruct.length from_buffer / from_info.B.sector_size in
 
       let rec loop next =

@@ -10,7 +10,6 @@ Example usage
 
 In a top-level like utop:
 ```ocaml
-# #require "io-page.unix";;
 # #require "mirage-block";;
 # #require "mirage-block-ramdisk";;
 # #require "lwt.syntax";;
@@ -21,8 +20,8 @@ val t_or_error : [ `Error of Ramdisk.error | `Ok of Ramdisk.t ] = `Ok <abstr>
 # let t = Mirage_block.Error.ok_exn t_or_error;;
 val t : Ramdisk.t = <abstr>
 
-# let page = Io_page.(to_cstruct (get 1));;
-val page : Ramdisk.page_aligned_buffer =
+# let page = Cstruct.create 4096;;
+val page : Cstruct.t =
   {Cstruct.buffer = <abstr>; off = 0; len = 4096}
 
 # lwt result_or_error = Ramdisk.read t 0L [ page ];;
