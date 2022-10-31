@@ -74,7 +74,9 @@ module type S = sig
       means the buffers have been filled.  [Error _] indicates an I/O
       error has happened and some of the buffers may not be filled.
       Each of elements in the list [buffers] must be a whole number of
-      sectors in length.  The list of buffers can be of any length. *)
+      sectors in length.  The list of buffers can be of any length.  Some
+      implementations may further require that each element in [buffers] is
+      exactly [sector_size] long. *)
 
   val write: t -> int64 -> Cstruct.t list ->
     (unit, write_error) result Lwt.t
@@ -91,7 +93,9 @@ module type S = sig
       data has been written.
 
       Each of [buffers] must be a whole number of sectors in
-      length. The list of buffers can be of any length.
+      length. The list of buffers can be of any length. Some implementations
+      may further require that each element in [buffers] is exactly
+      [sector_size] long.
 
       The data will not be copied, so the supplied buffers must not be
       re-used until the IO operation completes. *)
