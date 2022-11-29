@@ -1,3 +1,7 @@
+## v3.0.2 (2022-11-29)
+
+* Document optional buffer size requirement (#54 @reynir)
+
 ## v3.0.1 (2022-09-15)
 
 * Add Mirage_block.pp_info (#51 @reynir)
