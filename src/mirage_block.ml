@@ -53,3 +53,12 @@ module type S = sig
   val write: t -> int64 -> Cstruct.t list ->
     (unit, write_error) result Lwt.t
 end
+
+module type READ_ONLY = sig
+  type nonrec error = private [> error ]
+  val pp_error: error Fmt.t
+  type t
+  val disconnect : t -> unit Lwt.t
+  val get_info : t -> info Lwt.t
+  val read : t -> int64 -> Cstruct.t list -> (unit, error) result
+end
