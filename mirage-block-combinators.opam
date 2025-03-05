@@ -24,4 +24,4 @@ description: """
 This repo contains generic operations over Mirage `BLOCK` devices.
 This package is specialised to the Lwt concurrency library for IO.
 """
-
+x-maintenance-intent: [ "(latest)" ]
