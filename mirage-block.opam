@@ -22,4 +22,4 @@ synopsis: "Block signatures and implementations for MirageOS"
 description: """
 This repo contains generic operations over Mirage `BLOCK` devices.
 """
-
+x-maintenance-intent: [ "(latest)" ]
