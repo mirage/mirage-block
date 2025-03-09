@@ -101,3 +101,40 @@ module type S = sig
       re-used until the IO operation completes. *)
 
 end
+
+(** Operations on sector-addressible block devices, only for reading. *)
+module type READ_ONLY = sig
+
+  type nonrec error = private [> error ]
+  (** The type for block errors. *)
+
+  val pp_error: error Fmt.t
+  (** [pp_error] is the pretty-printer for errors. *)
+
+  type t
+  (** The type representing the internal state of the block device *)
+
+  val disconnect : t -> unit Lwt.t
+  (** Disconnect from the device. While this might take some time to
+      complete, it can never result in an error. *)
+
+  val get_info : t -> info Lwt.t
+  (** Query the characteristics of a specific block device *)
+
+  val read : t -> int64 -> Cstruct.t list -> (unit, error) result
+  (** [read device sector_start buffers] reads data starting at
+      [sector_start] from the block device into [buffers]. [Ok ()]
+      means the buffers have been filled.  [Error _] indicates an I/O
+      error has happened and some of the buffers may not be filled.
+      Each of elements in the list [buffers] must be a whole number of
+      sectors in length.  The list of buffers can be of any length.  Some
+      implementations may further require that each element in [buffers] is
+      exactly [sector_size] long.
+
+      {b NOTE}: due to the read-only view, we can read outside the scheduler
+      ([lwt]) because such view disallow write operations. By this way, the call
+      to {!val:read} is morally referentially transparent - and we don't need to
+      reschedule the call with anything else and the manipuled block device can
+      not change (no side-effect are allowed). *)
+
+end
